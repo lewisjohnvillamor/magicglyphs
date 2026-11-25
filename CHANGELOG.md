@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.8.4
+
+- 40 new drawings that fill gaps against other popular icon sets: RSS, air vent, wall lamp, utility pole, parking meter, videotape, wallet with cards, hiking stick, stretcher, treadmill, circuit board, NAS server, robot arm, laser, spreadsheet file, admin user, concave and convex lenses, theater masks, gender symbols, electric guitar, vocal mic, tally marks, tic-tac-toe, heart handshake, hand with coins, modern house, train track, electric truck, baggage claim, pool ladder, sundae, three regional globes, wrench and screwdriver, ID lanyard, sun with snow and dimmed sun.
+
 ## 0.8.3
 
 - 40 new drawings: paraglider, jetpack, hovercraft, tandem, rickshaw, tuk-tuk, raft, tugboat, catamaran, dinghy, porthole, astrolabe, orrery, planetarium, nebula, supernova, aurora, spacesuit, seismograph, barometer, anemometer, icicle, avalanche, geyser, canyon, cliff, dune, reef, lagoon, tidepool, driftwood, pebbles, stalactite, gemstone, trilobite, amber, geode, doubloon, eyepatch and spyglass.
