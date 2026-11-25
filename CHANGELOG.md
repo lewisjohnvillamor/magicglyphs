@@ -1,7 +1,8 @@
 # Changelog
 
-## 0.8.1
+## 0.8.2
 
+- The full library grows to 7,000 icons: 358 new drawings (animals, food and drink, instruments, zodiac signs, logic gates and circuit symbols, design tools, safety signs, toys, beach, farm and more) and badge variants (plus, minus, check, x, alert, lock, search, edit, sparkle) of about 300 more icons, each with its own motion and sound.
 - Repository link points to github.com/lewisjohnvillamor/magicglyphs.
 
 ## 0.8.0
