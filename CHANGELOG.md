@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.8.1
+
+- Repository link points to github.com/lewisjohnvillamor/magicglyphs.
+
 ## 0.8.0
 
 - **Animated images and video** for places that cannot run code (email, slides, Canva, Notion, Slack and Discord emoji, social posts): `--format gif`, `apng`, `webm` and `mp4`. Video carries the icon's sound. Drawn without a browser or native modules; video uses ffmpeg when installed. Also in the icon maker.
