@@ -1,0 +1,12 @@
+{%- comment -%}
+  Magic Glyphs snippet. Upload magic-glyphs.all.js to the theme's assets folder, save this file as snippets/magic-glyph.liquid, then:
+    {% render 'magic-glyph', name: 'cart', variant: 'duotone', size: 28, trigger: 'hover', label: 'Cart' %}
+  Snippets cannot share variables in Shopify, so the script loads itself once per page however many icons are rendered.
+  Sound: add sound: true. A mute switch for shoppers: {% render 'magic-glyph', toggle: true %}
+{%- endcomment -%}
+<script>(function(){if(window.__magicGlyphsLoading)return;window.__magicGlyphsLoading=1;var s=document.createElement('script');s.src={{ 'magic-glyphs.all.js' | asset_url | json }};s.defer=true;document.head.appendChild(s)})()</script>
+{%- if toggle -%}
+<magic-glyphs-sound-toggle default="{% if default_on == false %}off{% else %}on{% endif %}"></magic-glyphs-sound-toggle>
+{%- else -%}
+<magic-glyph name="{{ name | escape }}" variant="{{ variant | default: 'outline' | escape }}" size="{{ size | default: 24 | escape }}" trigger="{{ trigger | default: 'hover' | escape }}"{% if label %} label="{{ label | escape }}"{% endif %}{% if sound %} sound{% endif %}></magic-glyph>
+{%- endif -%}

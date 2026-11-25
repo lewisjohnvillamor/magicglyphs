@@ -1,0 +1,115 @@
+{
+  "name": "magic-glyphs",
+  "version": "0.7.1",
+  "description": "Animated icon library with sound: spring-animated SVG icons for React, Next.js, Vue, Nuxt, Svelte, Astro, shadcn, HTML, Tailwind, Lottie (iOS, Android, Flutter, Windows) and a CLI and MCP server. 120 icons free.",
+  "license": "SEE LICENSE IN LICENSE.md",
+  "author": {
+    "name": "Magic Glyphs",
+    "url": "https://magicglyphs.com"
+  },
+  "main": "lib.js",
+  "bin": {
+    "magic-glyphs": "cli/index.js"
+  },
+  "exports": {
+    ".": {
+      "types": "./web/runtime.d.ts",
+      "default": "./web/runtime.js"
+    },
+    "./all": "./web/magic-glyphs.all.js",
+    "./react": {
+      "types": "./react/index.d.ts",
+      "default": "./react/index.js"
+    },
+    "./vue": {
+      "types": "./vue/index.d.ts",
+      "default": "./vue/index.js"
+    },
+    "./lottie": "./tools/lottie.js",
+    "./node": "./lib.js",
+    "./icons.json": "./data/icons.json",
+    "./package.json": "./package.json",
+    "./licence": "./licence.js",
+    "./mcp": "./mcp/server.js"
+  },
+  "files": [
+    "lib.js",
+    "licence.js",
+    "cli",
+    "mcp",
+    "tools",
+    "web",
+    "react",
+    "vue",
+    "data",
+    "docs",
+    "wordpress",
+    "shopify",
+    "README.md",
+    "LICENSE.md"
+  ],
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "svgpath": "^2.6.0"
+  },
+  "peerDependencies": {
+    "react": ">=18",
+    "vue": ">=3.3"
+  },
+  "peerDependenciesMeta": {
+    "react": {
+      "optional": true
+    },
+    "vue": {
+      "optional": true
+    }
+  },
+  "keywords": [
+    "icons",
+    "animated icons",
+    "icon library",
+    "svg icons",
+    "react icons",
+    "vue icons",
+    "svelte icons",
+    "nextjs",
+    "nuxt",
+    "astro",
+    "shadcn",
+    "shadcn icons",
+    "tailwind",
+    "web component",
+    "custom element",
+    "lottie",
+    "lottie icons",
+    "react native",
+    "swiftui",
+    "jetpack compose",
+    "flutter",
+    "micro-interactions",
+    "ui sound",
+    "sound effects",
+    "icon animation",
+    "motion",
+    "mcp",
+    "mcp server",
+    "cli",
+    "icon maker"
+  ],
+  "magicGlyphs": {
+    "api": "https://api.magicglyphs.com",
+    "buy": "https://magicscraper.gumroad.com/l/vjaxbp"
+  },
+  "homepage": "https://magicglyphs.com",
+  "types": "./web/runtime.d.ts",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lewisjohnvillamor/magic-glyphs.git"
+  },
+  "bugs": {
+    "url": "https://github.com/lewisjohnvillamor/magic-glyphs/issues",
+    "email": "support@magicglyphs.com"
+  }
+}
