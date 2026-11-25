@@ -1,0 +1,13 @@
+{
+  "name": "Magic Glyphs",
+  "id": "REPLACE_WITH_FIGMA_PLUGIN_ID",
+  "api": "1.0.0",
+  "main": "code.js",
+  "ui": "ui.html",
+  "editorType": ["figma", "figjam", "slides"],
+  "documentAccess": "dynamic-page",
+  "networkAccess": {
+    "allowedDomains": ["https://api.magicglyphs.com"],
+    "reasoning": "Unlocks the full icon library with your Magic Glyphs licence key."
+  }
+}

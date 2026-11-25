@@ -39,6 +39,17 @@ Call `play()` through a template ref: `<MagicGlyph ref="g" ... />` then `g.value
 
 ## Shipping only the icons you use
 
+Your bundle only holds the icons you register, never the whole library. Each icon is about 0.2 KB, plus 8 KB for the runtime.
+
+- `magic-glyphs/icons.json` registers all 120 free icons at once (about 10 KB gzipped).
+- `magic-glyphs/icons/<name>` imports one free icon:
+
+```jsx
+import heart from 'magic-glyphs/icons/heart';
+import bell from 'magic-glyphs/icons/bell';
+register([heart, bell]);
+```
+
 The `icons.json` in the package holds the 120 free icons. For paid icons, and to ship only what you use, let the CLI write one small component per icon (after `npx magic-glyphs login`):
 
 ```bash

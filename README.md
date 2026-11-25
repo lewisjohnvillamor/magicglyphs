@@ -1,14 +1,15 @@
 # Magic Glyphs: animated icons with sound
 
-**An animated icon library for React, Next.js, Vue, Nuxt, Svelte, Astro, shadcn, plain HTML, WordPress, Shopify, React Native, SwiftUI, Jetpack Compose, Flutter, Windows and Tauri.** Every icon has its own spring animation and a short sound you can shape, in four styles: outline, solid, duotone and glass. It includes an icon maker that turns your own SVG or image into an animated icon, a command line tool, and an MCP server so coding assistants can insert icons for you.
+**An animated icon library for React, Next.js, Vue, Nuxt, Svelte, Astro, Angular, Solid, shadcn, plain HTML, WordPress, Shopify, Webflow, Framer, React Native, SwiftUI, Jetpack Compose, Compose Multiplatform, Flutter, Windows, .NET MAUI, Avalonia, Qt, Tauri, Rust, Godot, Unity and Figma, plus GIF and MP4 for email, slides and chat.** Every icon has its own spring animation and a short sound you can shape, in four styles: outline, solid, duotone and glass. It includes an icon maker that turns your own SVG or image into an animated icon, a command line tool, and an MCP server so coding assistants can insert icons for you.
 
 ![Magic Glyphs: animated icons with sound, plus a maker for your own](https://magicglyphs.com/cover.png)
 
 **[Live demo, docs and free icon browser →](https://magicglyphs.com)**
 
 - **120 free icons** in this package, free for personal and commercial use.
-- **3,900+ icons** in the full library with a licence key: interface, arrows, files, commerce, devices, media, food, nature, people, travel and flags.
-- **Tiny:** 8.5 KB compressed for the code that draws, animates and plays every icon, about 0.2 KB per icon, and no browser dependencies.
+- **3,950+ icons** in the full library with a licence key: interface, arrows, files, commerce, devices, media, food, nature, people, travel and flags.
+- **Tiny:** about 8 KB compressed for the code that draws, animates and plays every icon, about 0.2 KB per icon (import single icons: `magic-glyphs/icons/heart`), and no browser dependencies.
+- **Animated GIF, APNG, MP4 and WebM** for places that cannot run code: `--format gif`, video with the sound baked in.
 - **Accessible:** respects reduced motion, takes an accessible label, and sound is easy to mute.
 
 ## Install
@@ -173,13 +174,22 @@ Buy a licence at **[magicscraper.gumroad.com/l/vjaxbp](https://magicscraper.gumr
 | Shopify | snippet in `shopify/` | |
 | React Native | `--format react-native` | type-checked |
 | SwiftUI, Jetpack Compose, Flutter, Windows (WinUI) | `--format swiftui`, `compose`, `flutter`, `winui` | not yet on devices |
+| Qt Quick (QML) | `--format qml`, native vectors | rendered in Qt 6.12 |
+| Avalonia, .NET MAUI | `--format avalonia`, `maui` | not yet compiled |
+| Compose Multiplatform | `--format compose-multiplatform` | not yet compiled |
+| Godot, Unity, other game engines | `--format godot`, `unity`, `spritesheet` | not yet in the engines |
+| Rust (egui, iced, Slint) | `cargo add magic-glyphs`, `--format rust` | tested |
+| Email, slides, Canva, Notion, Slack, Discord | `--format gif`, `apng`, `mp4`, `webm` | decoded and checked |
+| Webflow, Framer, Wix, Squarespace, Ghost | script + embed | |
+| Figma, FigJam, Figma Slides | Magic Glyphs plugin | panel tested |
 | Tauri, Dioxus, Leptos | web setup | |
 | Any Lottie player | `--format lottie` | checked against an independent renderer |
 | Coding assistants | `magic-glyphs-mcp` | yes |
 
 ## Limitations
 
-- **Native app components** (SwiftUI, Compose, Flutter, WinUI) are generated from the tested Lottie export but have not yet been run on devices.
+- **Native app components** (SwiftUI, Compose, Flutter, WinUI, MAUI, Avalonia, Godot, Unity) are generated from tested exports but have not yet been run in those tools. The Qt and Rust outputs have been rendered and tested.
+- **MP4 and WebM from the command line** need ffmpeg; the icon maker makes them in the browser without it.
 - **Sound in native apps** comes as a separate `.wav` file; Lottie and static SVG themselves are silent.
 - **Glass style** is not available in Lottie, native or static SVG exports.
 - **Icon maker:** SVG text must be converted to outlines first, and stroke widths are replaced by the library's line weight. Image tracing (beta) suits simple, high-contrast artwork, not photos.
@@ -196,7 +206,7 @@ The full terms are in [`LICENSE.md`](https://unpkg.com/magic-glyphs/LICENSE.md).
 
 ## Guides
 
-[Getting started](https://magicglyphs.com/docs/getting-started/) · [HTML, WordPress, Shopify](https://magicglyphs.com/docs/web/) · [React, Next.js, Vue, Nuxt](https://magicglyphs.com/docs/react-vue/) · [shadcn](https://magicglyphs.com/docs/shadcn/) · [Astro, Svelte, Tailwind](https://magicglyphs.com/docs/frameworks/) · [React Native](https://magicglyphs.com/docs/react-native/) · [SwiftUI](https://magicglyphs.com/docs/swiftui/) · [Jetpack Compose](https://magicglyphs.com/docs/jetpack-compose/) · [Flutter](https://magicglyphs.com/docs/flutter/) · [Windows](https://magicglyphs.com/docs/windows/) · [Tauri and Rust](https://magicglyphs.com/docs/tauri-rust/) · [Sound](https://magicglyphs.com/docs/sound/) · [CLI](https://magicglyphs.com/docs/cli/) · [MCP](https://magicglyphs.com/docs/mcp/)
+[Getting started](https://magicglyphs.com/docs/getting-started/) · [HTML, WordPress, Shopify](https://magicglyphs.com/docs/web/) · [React, Next.js, Vue, Nuxt](https://magicglyphs.com/docs/react-vue/) · [shadcn](https://magicglyphs.com/docs/shadcn/) · [Astro, Svelte, Tailwind](https://magicglyphs.com/docs/frameworks/) · [React Native](https://magicglyphs.com/docs/react-native/) · [SwiftUI](https://magicglyphs.com/docs/swiftui/) · [Jetpack Compose](https://magicglyphs.com/docs/jetpack-compose/) · [Flutter](https://magicglyphs.com/docs/flutter/) · [Windows](https://magicglyphs.com/docs/windows/) · [Tauri and Rust](https://magicglyphs.com/docs/tauri-rust/) · [Sound](https://magicglyphs.com/docs/sound/) · [CLI](https://magicglyphs.com/docs/cli/) · [MCP](https://magicglyphs.com/docs/mcp/) · [Every other framework](https://magicglyphs.com/docs/more-frameworks/) · [Webflow, Framer, Wix](https://magicglyphs.com/docs/site-builders/) · [GIF, PNG and video](https://magicglyphs.com/docs/images-video/) · [Qt](https://magicglyphs.com/docs/qt/) · [Avalonia](https://magicglyphs.com/docs/avalonia/) · [.NET MAUI](https://magicglyphs.com/docs/maui/) · [Rust crate](https://magicglyphs.com/docs/rust/) · [Godot](https://magicglyphs.com/docs/godot/) · [Unity](https://magicglyphs.com/docs/unity/) · [Figma](https://magicglyphs.com/docs/figma/)
 
 ## Support
 

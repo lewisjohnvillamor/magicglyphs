@@ -20,7 +20,7 @@ server.registerTool('list_categories',{title:'List categories',description:'List
   async()=>{const c=L.categories();return text(Object.keys(c).sort().map(k=>k+': '+c[k]).join('\n')+'\ntotal: '+L.total)});
 server.registerTool('get_icon',{title:'Get icon',
   description:'Get one icon ready to use. format: "html" (custom element tag, needs the magic-glyphs script on the page), "react" or "vue" (component file source, needs the magic-glyphs npm package), "svg" (static SVG markup, no animation), "lottie" (animated Lottie JSON for iOS, Android, Windows, macOS and Flutter), "json" (raw icon data). Returns the suggested file name and the content.',
-  inputSchema:{name:z.string().describe('Exact icon name from search_icons'),format:z.enum(L.FORMATS).optional().describe('Default "html"'),style:z.enum(L.STYLES).optional().describe('Default "outline"'),
+  inputSchema:{name:z.string().describe('Exact icon name from search_icons'),format:z.enum(L.FORMATS.filter(f=>!['gif','apng','webm','mp4','wav','spritesheet','unity'].includes(f))).optional().describe('Default "html"'),style:z.enum(L.STYLES).optional().describe('Default "outline"'),
     color:z.string().regex(/^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/).optional().describe('Hex colour for svg and lottie output'),secondary:z.string().regex(/^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/).optional().describe('Hex duotone fill colour'),size:z.number().positive().max(2048).optional().describe('Pixel size for svg and html')},
   annotations:{readOnlyHint:true}},
   async({name,format,style,color,secondary,size})=>{

@@ -1,0 +1,140 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><style>
+  :root { --ink: var(--figma-color-text, #1a1a1a); --muted: var(--figma-color-text-secondary, #666); --line: var(--figma-color-border, #e5e5e5); --tile: var(--figma-color-bg-secondary, #f5f5f5); --brand: #4a35d6; }
+  * { box-sizing: border-box; } body { margin: 0; font: 12px/1.4 Inter, system-ui, sans-serif; color: var(--ink); background: var(--figma-color-bg, #fff); }
+  header { position: sticky; top: 0; background: var(--figma-color-bg, #fff); padding: 10px 12px 8px; border-bottom: 1px solid var(--line); z-index: 2; }
+  input, select, button { font: inherit; color: inherit; }
+  .q { width: 100%; height: 32px; padding: 0 10px; border: 1px solid var(--line); border-radius: 6px; background: transparent; }
+  .row { display: flex; gap: 6px; align-items: center; margin-top: 8px; flex-wrap: wrap; }
+  .seg button { height: 26px; padding: 0 8px; border: 1px solid var(--line); background: transparent; border-radius: 6px; cursor: pointer; }
+  .seg button[aria-pressed="true"] { background: var(--brand); border-color: var(--brand); color: #fff; }
+  input[type=color] { width: 26px; height: 26px; padding: 0; border: 1px solid var(--line); border-radius: 6px; background: none; }
+  select { height: 26px; border: 1px solid var(--line); border-radius: 6px; background: transparent; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(72px, 1fr)); gap: 6px; padding: 10px 12px; }
+  .cell { display: grid; justify-items: center; gap: 4px; padding: 10px 4px 6px; border: 0; border-radius: 8px; background: var(--tile); cursor: pointer; font-size: 10px; color: var(--muted); overflow-wrap: anywhere; }
+  .cell:hover, .cell:focus-visible { outline: 2px solid var(--brand); outline-offset: -2px; }
+  .cell svg { color: var(--ink); }
+  .more { margin: 0 12px 12px; width: calc(100% - 24px); height: 30px; border: 1px solid var(--line); background: transparent; border-radius: 6px; cursor: pointer; }
+  footer { padding: 10px 12px 14px; border-top: 1px solid var(--line); color: var(--muted); }
+  footer .row input { flex: 1; height: 28px; padding: 0 8px; border: 1px solid var(--line); border-radius: 6px; background: transparent; }
+  footer button { height: 28px; padding: 0 10px; border: 0; border-radius: 6px; background: var(--brand); color: #fff; cursor: pointer; }
+  .msg { margin-top: 6px; } .bad { color: #e5484d; } .good { color: #2f9e6b; }
+  a { color: var(--brand); }
+</style></head><body>
+<header>
+  <input class="q" id="q" placeholder="Search icons" autofocus>
+  <div class="row seg" id="styles"><button data-s="outline" aria-pressed="true">Outline</button><button data-s="solid">Solid</button><button data-s="duotone">Duotone</button>
+    <input type="color" id="color" value="#1a1a1a" title="Colour">
+    <select id="size" title="Size"><option>16</option><option selected>24</option><option>32</option><option>48</option><option>64</option><option>96</option></select></div>
+  <div class="row seg" id="modes"><button data-m="vector" aria-pressed="true">Vector</button><button data-m="gif">Animated GIF</button><span id="count" style="margin-left:auto;color:var(--muted)"></span></div>
+</header>
+<div class="grid" id="grid"></div>
+<button class="more" id="more" hidden>Show more</button>
+<footer>
+  <div id="lock">The 120 free icons are here. Unlock all icons with your licence key:
+    <div class="row"><input id="key" placeholder="Licence key from your Gumroad receipt" spellcheck="false"><button id="unlock">Unlock</button></div>
+    <div><a href="https://magicglyphs.com/#pricing" target="_blank">Get a licence</a> · Founders: 80% off with code FOUNDERS</div></div>
+  <div class="msg" id="msg" role="status"></div>
+</footer>
+<script>/*RUNTIME*/</script>
+<script>/*FREE*/</script>
+<script>/*GIF*/</script>
+<script>
+(function () {
+  var API = 'https://api.magicglyphs.com', GUM = /^[A-Za-z0-9]{8}(-[A-Za-z0-9]{8}){3}$/;
+  var MG = window.MagicGlyphs, list = MG.names().map(function (n) { return MG.icon(n); }), style = 'outline', mode = 'vector', shown = 0, PAGE = 120, device = 'fig-unknown';
+  var $ = function (id) { return document.getElementById(id); };
+  function say(t, cls) { $('msg').textContent = t || ''; $('msg').className = 'msg ' + (cls || ''); }
+  function staticSvg(n, size) {
+    var col = $('color').value;
+    return MG.svg(n, { style: style, size: size }).replace(/var\(--mg-bg,#fff\)/g, '#ffffff')
+      .replace(/style="fill:var\(--mg-secondary,currentColor\);fill-opacity:var\(--mg-secondary-opacity,.18\)"/g, 'fill="' + col + '" fill-opacity="0.18"')
+      .replace(/var\(--mg-secondary,currentColor\)/g, col).replace(/currentColor/g, col).replace(' overflow="visible"', '');
+  }
+  function matches() {
+    var w = $('q').value.trim().toLowerCase().split(/\s+/).filter(Boolean);
+    return list.filter(function (ic) { var h = ic.n + ' ' + (ic.t || '') + ' ' + ic.c; return w.every(function (x) { return h.indexOf(x) >= 0; }); });
+  }
+  function draw(reset) {
+    var m = matches(), g = $('grid'); if (reset) { g.textContent = ''; shown = 0; }
+    var end = Math.min(m.length, shown + PAGE);
+    for (var i = shown; i < end; i++) (function (ic) {
+      var b = document.createElement('button'); b.className = 'cell'; b.title = ic.n;
+      b.innerHTML = MG.svg(ic.n, { style: style, size: 28 }) + '<span></span>'; b.lastChild.textContent = ic.n;
+      b.onclick = function () { insert(ic.n); };
+      g.appendChild(b);
+    })(m[i]);
+    shown = end; $('more').hidden = shown >= m.length; $('more').textContent = 'Show more (' + (m.length - shown) + ' left)';
+    $('count').textContent = m.length + ' icons';
+  }
+  function insert(n) {
+    var size = +$('size').value;
+    if (mode === 'vector') { parent.postMessage({ pluginMessage: { type: 'svg', name: n, svg: staticSvg(n, size) } }, '*'); return; }
+    say('Making the animated GIF…');
+    setTimeout(function () {
+      try { var px = Math.max(96, size * 4), bytes = gif(MG.icon(n), px); parent.postMessage({ pluginMessage: { type: 'gif', name: n, bytes: Array.from(bytes), size: size * 2 } }, '*'); say(''); }
+      catch (e) { say(e.message, 'bad'); }
+    }, 20);
+  }
+  // ---- animated GIF: the spring motion drawn frame by frame on a canvas ----
+  function sample(ic, fps) {
+    if (!ic.A || !ic.A.length) return [{}];
+    var st = MG.state(ic), start = {}, frames = [], sub = Math.ceil(240 / fps), dt = 1 / (fps * sub); st.start();
+    ic.A.forEach(function (a) { if (a.from !== undefined) a.l.split(' ').forEach(function (id) { (start[id] = start[id] || { tx: 0, ty: 0, r: 0, s: 0, sx: 0, sy: 0 })[a.p] += a.from; }); });
+    frames.push(start);
+    for (var f = 1; f <= fps * 6; f++) { var acc = null, done = false; for (var k = 0; k < sub; k++) { acc = st.step(dt); if (!acc) { done = true; break; } } if (done || !acc) break; frames.push(acc); }
+    frames.push({}); return frames;
+  }
+  function paints(kind) {
+    if (kind === 'f') return ['fill']; if (kind === 'd') return [style === 'solid' ? 'knock' : 'fill'];
+    if (kind === 'o') return ['stroke']; if (kind === 'i') return [style === 'solid' ? 'knockline' : 'stroke'];
+    if (style === 'solid') return ['fill', 'stroke']; if (style === 'duotone') return ['tint', 'stroke']; return ['stroke'];
+  }
+  function gif(ic, size) {
+    var fps = 50, pad = 2.5, k = size / (24 + pad * 2), col = $('color').value, org = MG.origins(ic), frames = sample(ic, fps), out = [], delays = [];
+    var cv = document.createElement('canvas'); cv.width = cv.height = size; var ctx = cv.getContext('2d', { willReadFrequently: true });
+    frames.forEach(function (f, fi) {
+      ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.fillStyle = '#ffffff'; ctx.fillRect(0, 0, size, size);
+      ic.L.forEach(function (l) {
+        var v = f[l.i], oR = org[l.i + '|r'] || org[l.i + '|s'] || [12, 12], oS = org[l.i + '|s'] || org[l.i + '|r'] || [12, 12];
+        ctx.setTransform(k, 0, 0, k, pad * k, pad * k);
+        if (v) { ctx.translate(v.tx, v.ty); ctx.translate(oR[0], oR[1]); ctx.rotate(v.r * Math.PI / 180); ctx.translate(-oR[0], -oR[1]); ctx.translate(oS[0], oS[1]); ctx.scale(1 + v.s + v.sx, 1 + v.s + v.sy); ctx.translate(-oS[0], -oS[1]); }
+        l.p.forEach(function (p) {
+          ctx.save(); if (p.r) { ctx.translate(p.r[1], p.r[2]); ctx.rotate(p.r[0] * Math.PI / 180); ctx.translate(-p.r[1], -p.r[2]); }
+          var path = new Path2D(p.d); ctx.lineWidth = 1.75; ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+          paints(l.k).forEach(function (how) {
+            ctx.globalAlpha = how === 'tint' ? .18 : 1;
+            if (how === 'fill' || how === 'tint') { ctx.fillStyle = p.f || col; ctx.fill(path); }
+            else if (how === 'knock') { ctx.fillStyle = '#ffffff'; ctx.fill(path); }
+            else { ctx.strokeStyle = how === 'knockline' ? '#ffffff' : col; ctx.stroke(path); }
+          });
+          ctx.restore();
+        });
+      });
+      out.push(ctx.getImageData(0, 0, size, size).data); delays.push(1 / fps + (fi === 0 ? .15 : 0));
+    });
+    delays[delays.length - 1] += .6;
+    return MGGif.encode({ width: size, height: size, frames: out, delays: delays, loop: 0, background: [255, 255, 255] });
+  }
+  // ---- licence ----
+  function load(key) {
+    say('Checking your key…');
+    var got = GUM.test(key) ? fetch(API + '/v1/redeem', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ licence_key: key }) })
+      .then(function (r) { return r.json().then(function (d) { if (!r.ok || !d.key) throw new Error(d.error || 'The licence server answered ' + r.status + '.'); return d.key; }); }) : Promise.resolve(key);
+    return got.then(function (k) {
+      if (!/^MG1\./.test(k)) throw new Error('That does not look like a licence key. Copy it from your Gumroad receipt.');
+      return fetch(API + '/v1/icons.json', { headers: { authorization: 'Bearer ' + k, 'x-mg-device': device } }).then(function (r) {
+        return r.json().then(function (d) { if (!r.ok) throw new Error(d.error || 'The server answered ' + r.status + '.'); MG.register(d); list = d.icons; parent.postMessage({ pluginMessage: { type: 'save-key', key: k } }, '*'); $('lock').hidden = true; say('Unlocked: ' + list.length + ' icons.', 'good'); draw(true); });
+      });
+    }).catch(function (e) { say(e.message, 'bad'); });
+  }
+  onmessage = function (e) { var m = e.data && e.data.pluginMessage; if (m && m.type === 'boot') { device = m.device; if (m.key) load(m.key); } };
+  $('unlock').onclick = function () { var k = $('key').value.trim(); if (k) load(k); else say('Paste the licence key from your Gumroad receipt.', 'bad'); };
+  $('q').oninput = function () { draw(true); };
+  $('more').onclick = function () { draw(false); };
+  $('styles').onclick = function (e) { var b = e.target.closest('button'); if (!b) return; style = b.dataset.s; [].forEach.call(this.querySelectorAll('button'), function (x) { x.setAttribute('aria-pressed', x === b); }); draw(true); };
+  $('modes').onclick = function (e) { var b = e.target.closest('button'); if (!b) return; mode = b.dataset.m; [].forEach.call(this.querySelectorAll('button'), function (x) { x.setAttribute('aria-pressed', x === b); }); };
+  draw(true);
+})();
+</script>
+</body></html>

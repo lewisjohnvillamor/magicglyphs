@@ -23,14 +23,21 @@ Usage
 
 Options for add
   --format <f>      svg (default) | lottie | react | vue | json | html | wav (the icon's sound)
-                    react-native | swiftui | compose | flutter | winui (one ready-to-use component file)
+                    gif | apng (animated images for email, slides, Canva, Notion, Slack and Discord emoji)
+                    webm | mp4 (video with the sound baked in, for social posts and slides; needs ffmpeg)
+                    react-native | swiftui | compose | compose-multiplatform | flutter | winui
+                    maui | avalonia | qml (Qt Quick) | godot | unity | rust | spritesheet (PNG grid + JSON)
   --sound           with --format lottie, also write each icon's sound as a .wav file
   --style <s>       outline (default) | solid | duotone | glass
   --out <dir>       where to write (default ./magic-glyphs)
   --color <hex>     main colour      (svg default: currentColor, lottie default: #000000)
   --secondary <hex> duotone fill colour
   --background <hex> colour knocked out of solid icons (default #ffffff)
-  --size <px>       svg width and height (default 24)
+  --size <px>       width and height (svg 24, gif 256, apng 128, webm/mp4 512, spritesheet/unity frames 128)
+  --loop <n>        gif and apng: times to play (default 0 = forever)
+  --hold <s>        gif, apng and video: seconds to hold the last pose (default 0.6)
+  --matte <hex>     gif with no --background: colour soft edges blend into (default #ffffff)
+  --no-sound        webm and mp4 without the sound
   --ts | --js       typed or plain React/Vue components (default: typed when the project has a tsconfig.json)
   --from <path>     your own icons: JSON from the icon maker (a file or a folder), no licence needed
   --stdout          print a single icon instead of writing a file
@@ -40,12 +47,14 @@ Examples
   magic-glyphs search shopping cart
   magic-glyphs add heart bell --format react --out src/icons
   magic-glyphs add my-logo --from my-icons/ --format lottie
+  magic-glyphs add rocket --format gif --color "#7c3aed" --background "#ffffff"
+  magic-glyphs add bell --format mp4 --size 1080
   magic-glyphs add --category arrows --format lottie --color "#2747f5" --out assets/lottie
 
 Docs: https://magicglyphs.com/docs/    Support: support@magicglyphs.com
 `;
 function parse(argv){const pos=[],opt={};for(let i=0;i<argv.length;i++){const a=argv[i];
-    if(a.startsWith('--')){const k=a.slice(2);if(['json','all','stdout','dry-run','help','free','show-key','version','ts','js','sound','env'].includes(k))opt[k]=true;else{if(i+1>=argv.length)fail('Option --'+k+' needs a value.');opt[k]=argv[++i]}}
+    if(a.startsWith('--')){const k=a.slice(2);if(['json','all','stdout','dry-run','help','free','show-key','version','ts','js','sound','env','no-sound'].includes(k))opt[k]=true;else{if(i+1>=argv.length)fail('Option --'+k+' needs a value.');opt[k]=argv[++i]}}
     else if(a==='-h')opt.help=true;else if(a==='-v')opt.version=true;else pos.push(a)}return{pos,opt}}
 // fetch the full set for a valid key; the server address comes from MAGIC_GLYPHS_API or package.json "magicGlyphs.api"
 const apiBase=()=>(process.env.MAGIC_GLYPHS_API||(require('../package.json').magicGlyphs||{}).api||'').replace(/\/$/,'');
@@ -102,14 +111,24 @@ try{
     if(opt.size&&!(+opt.size>0))fail('--size must be a positive number.');
     for(const k of ['color','secondary','background'])if(opt[k]&&!/^#([0-9a-f]{3}|[0-9a-f]{6})$/i.test(opt[k])&&!(format==='svg'&&/^[a-z]+$/i.test(opt[k])))fail('--'+k+' must be a hex colour such as #2747f5.');
     // wav: the icon's sound as an audio file, for native apps (Lottie and static exports are silent); --sound adds one next to each Lottie file
-    if(format==='wav'||(['lottie','react-native','swiftui','compose','flutter','winui'].includes(format)&&opt.sound)){if(opt.stdout)fail('Audio cannot be printed; use --out.');const A=require('../tools/audio.js'),dir=path.resolve(opt.out||'magic-glyphs');
+    // gif, apng, webm, mp4: frames are drawn here (no browser needed); video also needs ffmpeg
+    if(['gif','apng','webm','mp4'].includes(format)){if(opt.stdout)fail('Animated files cannot be printed; use --out.');
+      if(opt.loop!==undefined&&!(+opt.loop>=0))fail('--loop must be 0 (forever) or a number of plays.');if(opt.hold!==undefined&&!(+opt.hold>=0))fail('--hold must be seconds, such as 0.6.');
+      if(opt.matte&&!/^#([0-9a-f]{3}|[0-9a-f]{6})$/i.test(opt.matte))fail('--matte must be a hex colour such as #ffffff.');
+      const M=require('../tools/motion.js'),dir=path.resolve(opt.out||'magic-glyphs'),mo=Object.assign({},o,{loop:opt.loop,hold:opt.hold===undefined?undefined:+opt.hold,matte:opt.matte,sound:!opt['no-sound']});
+      if(opt['dry-run']){console.log('Would write '+names.length+' file'+(names.length>1?'s':'')+' to '+dir+': '+names.map(n=>n+'.'+(format==='apng'?'png':format)).join(', '));return}
+      (async()=>{fs.mkdirSync(dir,{recursive:true});const done=[];
+        for(const n of names){const data=format==='gif'?await M.gif(L,n,mo):format==='apng'?await M.apng(L,n,mo):await require('./video.js').video(L,n,format,mo);
+          const file=n+(o.style&&o.style!=='outline'?'.'+o.style:'')+'.'+(format==='apng'?'png':format);fs.writeFileSync(path.join(dir,file),data);done.push(file+' ('+Math.round(data.length/1024)+' KB)')}
+        console.log('Wrote '+done.length+' file'+(done.length>1?'s':'')+' to '+dir+(done.length<=6?': '+done.join(', '):''))})().catch(e=>fail(e.message));return}
+    if(format==='wav'||(['lottie','react-native','swiftui','compose','flutter','winui','maui','avalonia','qml','godot','unity','compose-multiplatform','spritesheet'].includes(format)&&opt.sound)){if(opt.stdout)fail('Audio cannot be printed; use --out.');const A=require('../tools/audio.js'),dir=path.resolve(opt.out||'magic-glyphs');
       (async()=>{const files=[];for(const n of names){if(format!=='wav')files.push(L.render(n,format,o));const ic=L.byName.get(n);if(!ic.s){if(format==='wav')console.log(n+' has no sound; skipped.');continue}
           files.push({file:n+'.wav',data:await A.wav(L.MG,n)})}
-        if(!opt['dry-run']){fs.mkdirSync(dir,{recursive:true});files.forEach(f=>fs.writeFileSync(path.join(dir,f.file),f.data||f.text))}
+        if(!opt['dry-run']){fs.mkdirSync(dir,{recursive:true});files.forEach(f=>{fs.writeFileSync(path.join(dir,f.file),f.data||f.text);(f.extra||[]).forEach(x=>fs.writeFileSync(path.join(dir,x.file),x.data))})}
         console.log((opt['dry-run']?'Would write ':'Wrote ')+files.length+' file'+(files.length===1?'':'s')+' to '+dir+(files.length<=6?': '+files.map(f=>f.file).join(', '):''))})().catch(e=>fail(e.message));return}
     if(opt.stdout){if(names.length!==1)fail('--stdout prints one icon; name exactly one.');process.stdout.write(L.render(names[0],format,o).text+'\n')}
     else{const dir=path.resolve(opt.out||'magic-glyphs');const files=names.map(n=>L.render(n,format,o));
-      if(!opt['dry-run']){fs.mkdirSync(dir,{recursive:true});files.forEach(f=>fs.writeFileSync(path.join(dir,f.file),f.text))}
+      if(!opt['dry-run']){fs.mkdirSync(dir,{recursive:true});files.forEach(f=>{fs.writeFileSync(path.join(dir,f.file),f.data||f.text);(f.extra||[]).forEach(x=>fs.writeFileSync(path.join(dir,x.file),x.data))})}
       console.log((opt['dry-run']?'Would write ':'Wrote ')+files.length+' file'+(files.length>1?'s':'')+' to '+dir+(files.length<=6?': '+files.map(f=>f.file).join(', '):''));
       if(format==='react'||format==='vue')console.log('These components import from the "magic-glyphs" package, so keep it installed.');}
   }

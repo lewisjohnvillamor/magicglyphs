@@ -205,4 +205,4 @@ public sealed class ${P}Glyph : UserControl
 }
 ` };
 }
-module.exports = { 'react-native': reactNative, swiftui, compose, flutter, winui };
+module.exports = { 'react-native': reactNative, swiftui, compose, flutter, winui, lottieJson };

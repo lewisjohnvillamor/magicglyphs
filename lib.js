@@ -12,7 +12,7 @@ const data=loadData();MG.register(data);
 const idxFile=path.join(__dirname,'data','index.json');
 const index=(()=>{let ix=null;try{ix=JSON.parse(fs.readFileSync(idxFile,'utf8'))}catch(e){}const own=data.icons.map(i=>({n:i.n,c:i.c,t:i.t}));return ix&&ix.length>own.length?ix:own})();
 const known=new Set(index.map(i=>i.n)),total=index.length;
-const STYLES=['outline','solid','duotone','glass'],FORMATS=['svg','lottie','json','react','vue','html','react-native','swiftui','compose','flutter','winui'];
+const STYLES=['outline','solid','duotone','glass'],FORMATS=['svg','lottie','json','react','vue','html','react-native','swiftui','compose','flutter','winui','gif','apng','webm','mp4','wav','maui','avalonia','qml','godot','unity','compose-multiplatform','rust','spritesheet'];
 const byName=new Map(data.icons.map(i=>[i.n,i]));
 const categories=()=>{const c={};index.forEach(i=>c[i.c]=(c[i.c]||0)+1);return c};
 function search(query,opt){
@@ -53,6 +53,11 @@ function render(name,format,o){
     // native apps: one file each, with the Lottie animation inside (see tools/native.js)
     case 'react-native':case 'swiftui':case 'compose':case 'flutter':case 'winui':{if(style==='glass')throw new Error('Native formats support outline, solid and duotone.');
       const f=require('./tools/native.js')[format](ic,Object.assign({},o,{style}));return{ext:f.file.split('.').pop(),file:f.file,text:f.text}}
+    // more native targets (tools/native2.js); unity and spritesheet also write a PNG sprite sheet
+    case 'maui':case 'avalonia':case 'qml':case 'godot':case 'unity':case 'compose-multiplatform':case 'rust':{if(style==='glass')throw new Error('Native formats support outline, solid and duotone.');
+      const f=require('./tools/native2.js')[format](ic,Object.assign({},o,{style,MG}));return{ext:f.file.split('.').pop(),file:f.file,text:f.text,extra:f.extra}}
+    case 'spritesheet':{if(style==='glass')throw new Error('Sprite sheets support outline, solid and duotone.');
+      const s=require('./tools/native2.js').spritesheet(ic,Object.assign({},o,{style,MG,size:o.size||128}));return{ext:'png',file:name+'.sheet.png',data:s.png,extra:[{file:name+'.sheet.json',data:JSON.stringify(s.meta,null,2)}]}}
     case 'react':{const P=pascal(name),ts=!!o.ts;
       // "use client" lets the component sit inside a Next.js server component tree; other bundlers ignore it
       return{ext:ts?'tsx':'jsx',file:P+'Glyph.'+(ts?'tsx':'jsx'),text:`'use client';\nimport { MagicGlyph, register${ts?', type MagicGlyphProps':''} } from 'magic-glyphs/react';\n\nregister([${JSON.stringify(ic)}]);\n\n/** Animated "${name}" icon. Props: variant, size, trigger, label, sound, className, style. */\nexport default function ${P}Glyph(props${ts?": Omit<MagicGlyphProps, 'name'>":''}) {\n  return <MagicGlyph name="${name}" variant="${style}" {...props} />;\n}\n`}}

@@ -57,7 +57,7 @@ Files for non-outline styles carry the style in the name, for example `heart.duo
 
 ```bash
 npx magic-glyphs login YOUR-LICENCE-KEY   # the key from your Gumroad receipt (no < > around it); downloads the full library
-npx magic-glyphs buy                     # opens the page where you can buy a licence
+npx magic-glyphs buy                     # shows the link where you can buy a licence
 npx magic-glyphs update                  # tells you if a newer version is out, then downloads new paid icons
 npx magic-glyphs build-key               # a key for CI and build servers that does not use a device
 npx magic-glyphs shadcn --env            # connect a shadcn project (see the shadcn guide)

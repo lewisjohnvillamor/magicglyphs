@@ -3,7 +3,7 @@
   'use strict';
   var REG={},uid=0;
   var STROKE='stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"';
-  function register(data){(data.icons||data).forEach(function(ic){REG[ic.n]=ic});
+  function register(data){(data.icons||(Array.isArray(data)?data:[data])).forEach(function(ic){REG[ic.n]=ic}); // a set, a list, or one icon
     // elements already on the page were upgraded before their data arrived: draw them now
     if(typeof document!=='undefined')Array.prototype.forEach.call(document.querySelectorAll('magic-glyph'),function(e){if(e._render)e._render()});
     return api}

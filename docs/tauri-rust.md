@@ -12,4 +12,4 @@ Then use the `<magic-glyph>` tag, or the React, Vue or Svelte setup your front e
 
 ## Native Rust interfaces (egui, iced, Slint)
 
-Export still icons with `npx magic-glyphs static --out assets/icons` and load the SVG files with your toolkit's SVG support, or export Lottie files for a Lottie player. A native Rust crate with animation is planned.
+Use the [magic-glyphs crate](https://magicglyphs.com/docs/rust/): `cargo add magic-glyphs`. It gives you each icon's SVG at any moment of its motion, with no dependencies.
