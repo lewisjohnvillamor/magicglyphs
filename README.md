@@ -7,7 +7,7 @@
 **[Live demo, docs and free icon browser →](https://magicglyphs.com)**
 
 - **120 free icons** in this package, free for personal and commercial use.
-- **7,000 icons** in the full library with a licence key: interface, arrows, files, commerce, devices, media, food, nature, people, travel and flags.
+- **7,000+ icons** in the full library with a licence key: interface, arrows, files, commerce, devices, media, food, nature, people, travel and flags.
 - **Tiny:** about 8 KB compressed for the code that draws, animates and plays every icon, about 0.2 KB per icon (import single icons: `magic-glyphs/icons/heart`), and no browser dependencies.
 - **Animated GIF, APNG, MP4 and WebM** for places that cannot run code: `--format gif`, video with the sound baked in.
 - **Accessible:** respects reduced motion, takes an accessible label, and sound is easy to mute.

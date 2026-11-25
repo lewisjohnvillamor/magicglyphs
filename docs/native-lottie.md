@@ -80,7 +80,7 @@ npx magic-glyphs add bell --format lottie --sound --out assets
 
 ## How the export was checked
 
-Every icon was converted and rendered at two mid-animation frames with an independent Lottie library, then compared pixel by pixel with the web engine. All 3,947 matched within a small tolerance. The files have **not** yet been played in lottie-ios, lottie-android or Lottie-Windows; try a handful on a device before relying on them.
+Every icon was converted and rendered at two mid-animation frames with an independent Lottie library, then compared pixel by pixel with the web engine. All 3,947 icons the library had at the time matched within a small tolerance; icons added since use the same converter. The files have **not** yet been played in lottie-ios, lottie-android or Lottie-Windows; try a handful on a device before relying on them.
 
 ## After Effects, Webflow, Framer, LottieFiles
 
