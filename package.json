@@ -110,10 +110,10 @@
   "types": "./web/runtime.d.ts",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/lewisjohnvillamor/magic-glyphs.git"
+    "url": "git+https://github.com/lewisjohnvillamor/magicglyphs.git"
   },
   "bugs": {
-    "url": "https://github.com/lewisjohnvillamor/magic-glyphs/issues",
+    "url": "https://github.com/lewisjohnvillamor/magicglyphs/issues",
     "email": "support@magicglyphs.com"
   }
 }
