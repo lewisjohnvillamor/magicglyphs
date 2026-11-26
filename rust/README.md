@@ -32,4 +32,4 @@ designed or uploaded sound, export to WAV the same way.
 
 Tauri, Dioxus, Leptos and Yew apps can also use the web component from the `magic-glyphs` npm package, which plays the sound for you.
 
-Docs: https://magicglyphs.com/docs/rust/ · Support: support@magicglyphs.com · Licence: see LICENSE.md (free icons may be used in any project; the full library is licensed per buyer).
+Docs: https://magicglyphs.com/docs/rust/ · Support: support@magicglyphs.com · Licence: MIT for this crate and its 120 free icons (see LICENSE); the paid icons have their own licence: https://magicglyphs.com/docs/terms/

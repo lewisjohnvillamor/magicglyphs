@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.8.8
+
+- Licence: the package (code, the 120 free icons and the sounds) is now MIT licensed. The paid icons have their own commercial licence (COMMERCIAL-LICENSE.md). The npm, JSR, MCP and Rust packages all use MIT.
+- JSR package: `@magicglyphs/magic-glyphs`.
+
 ## 0.8.7
 
 - WordPress plugin: a Magic Glyph block with live preview, colour, size, trigger and sound settings; shortcode options for a sound and a colour; licensed GPLv2 or later, ready for the WordPress.org directory.

@@ -1,14 +1,17 @@
 Magic Glyphs WordPress plugin
 Copyright (C) 2026 Lewis John Villamor
 
-This plugin, including the 120 icons, animations and sounds it contains, is free software:
-you can redistribute it and/or modify it under the terms of the GNU General Public License
-as published by the Free Software Foundation, either version 2 of the License, or (at your
-option) any later version.
+This plugin is free software: you can redistribute it and/or modify it under the terms of
+the GNU General Public License as published by the Free Software Foundation, either
+version 2 of the License, or (at your option) any later version.
+
+The Magic Glyphs runtime, the 120 icons, their animations and sounds that this plugin
+contains are also available under the MIT License, which is compatible with the GPL:
+https://github.com/lewisjohnvillamor/magicglyphs/blob/main/LICENSE
 
 This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
 without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 See the GNU General Public License for more details: https://www.gnu.org/licenses/gpl-2.0.html
 
-The rest of the Magic Glyphs library, including the paid icons, is not part of this plugin
-and is covered by its own licence: https://magicglyphs.com/docs/licence/
+The paid Magic Glyphs icons are not part of this plugin and are covered by their own
+licence: https://magicglyphs.com/docs/terms/

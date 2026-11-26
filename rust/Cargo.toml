@@ -1,17 +1,17 @@
 [package]
 name = "magic-glyphs"
-version = "0.8.7"
+version = "0.8.8"
 edition = "2021"
 rust-version = "1.70"
 description = "Animated icons with sound for Rust apps: the 120 free Magic Glyphs icons, their spring motion and an SVG for any moment of it. No dependencies."
-license-file = "LICENSE.md"
+license = "MIT"
 homepage = "https://magicglyphs.com"
 documentation = "https://magicglyphs.com/docs/rust/"
 repository = "https://github.com/lewisjohnvillamor/magicglyphs"
 readme = "README.md"
 keywords = ["icons", "animation", "svg", "gui", "egui"]
 categories = ["gui", "multimedia::images", "rendering"]
-include = ["src/**", "examples/**", "README.md", "LICENSE.md", "Cargo.toml"]
+include = ["src/**", "examples/**", "README.md", "LICENSE", "Cargo.toml"]
 
 [features]
 default = ["free-icons"]

@@ -1,17 +1,18 @@
 {
   "name": "@magicglyphs/magic-glyphs",
-  "version": "0.8.7",
+  "version": "0.8.8",
   "exports": {
     ".": "./jsr/runtime.js",
     "./all": "./jsr/all.js",
     "./free-icons": "./jsr/free-icons.js",
     "./sounds": "./jsr/sounds.js"
   },
+  "license": "MIT",
   "publish": {
     "include": [
       "jsr/",
       "README.md",
-      "LICENSE.md"
+      "LICENSE"
     ]
   }
 }

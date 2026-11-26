@@ -216,11 +216,11 @@ Buy a licence at **[magicscraper.gumroad.com/l/vjaxbp](https://magicscraper.gumr
 
 ## Licence
 
-- **Free icons:** use them in any personal or commercial project, no attribution needed.
-- **Paid icons:** one-time purchase for the people and devices in your plan.
-- **Not allowed:** reselling or redistributing the icons as icons, publishing the paid icons where others can download them, or using them to train or build icon generators.
+Magic Glyphs uses two licences, like most icon libraries with a free and a paid tier:
 
-The full terms are in [`LICENSE.md`](https://unpkg.com/magic-glyphs/LICENSE.md).
+- **This package is MIT licensed:** the code, the 120 free icons and the sounds. Use them in any personal or commercial project, change them and share them; keep the copyright notice with copies of the files. See [`LICENSE`](./LICENSE).
+- **The paid icons** (everything that needs a licence key) are covered by the [commercial licence](./COMMERCIAL-LICENSE.md): a one-time purchase for the people in your plan, for any number of personal, commercial and client projects. Not allowed: reselling or redistributing them as icons, publishing them where others can download them, sharing keys, or using them to train or build icon generators.
+- **The name** "Magic Glyphs" is not covered by either licence: please don't use it as the name of your own project.
 
 ## Guides
 

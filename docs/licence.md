@@ -43,4 +43,4 @@ Each download of the full set records which licence it was made for. Keep your k
 
 With a key, `add`, `static`, `registry` and the MCP server's `get_icon` return every icon. Without one they return the free set and explain what is missing.
 
-The full terms are in LICENSE.md at the top of this package.
+The code, the free icons and their sounds are MIT licensed (LICENSE). The paid icons are covered by COMMERCIAL-LICENSE.md.
