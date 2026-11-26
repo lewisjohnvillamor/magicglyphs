@@ -17,7 +17,7 @@ let length = bell.duration();                 // seconds; redraw each frame unti
 let m = bell.matrix(0, 0.12);                 // or draw it yourself: [a b c d e f] for layer 0
 ```
 
-The crate includes the 120 free icons. The full library (3,900+ icons) is generated into your project by the
+The crate includes the 120 free icons. The full library (8,000+ icons) is generated into your project by the
 command line tool once you log in with your licence key:
 
 ```sh
@@ -25,8 +25,10 @@ npx magic-glyphs login YOUR-LICENCE-KEY
 npx magic-glyphs add rocket heart --format rust --out src/glyphs
 ```
 
-Each generated file holds one `pub const ICON: Icon`. Sounds: `icon.sound` names the icon's sound; export the audio with
-`npx magic-glyphs add bell --format wav` and play it with `rodio` (or your audio library) when the motion starts.
+Each generated file holds one `pub const ICON: Icon`. Sounds: `icon.sound` names the icon's sound, one of 100 built-in
+sounds (528 with the optional pack). Export the audio with `npx magic-glyphs add bell --format wav` and play it with
+`rodio` (or your audio library) when the motion starts. Icons you make in the icon maker, including ones with your own
+designed or uploaded sound, export to WAV the same way.
 
 Tauri, Dioxus, Leptos and Yew apps can also use the web component from the `magic-glyphs` npm package, which plays the sound for you.
 
