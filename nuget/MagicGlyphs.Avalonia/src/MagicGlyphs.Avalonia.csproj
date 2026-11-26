@@ -1,0 +1,31 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <LangVersion>latest</LangVersion>
+    <RootNamespace>MagicGlyphs</RootNamespace>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <PackageId>MagicGlyphs.Avalonia</PackageId>
+    <Version>0.8.9</Version>
+    <Authors>Lewis John Villamor</Authors>
+    <Description>Animated icons with sound for Avalonia: 120 free Magic Glyphs icons with spring motion in outline, solid and duotone, each with its own short sound. One control, no other dependencies.</Description>
+    <PackageTags>avalonia;icons;animated-icons;animation;svg;sound;ui</PackageTags>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageProjectUrl>https://magicglyphs.com/docs/avalonia/</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/lewisjohnvillamor/magicglyphs</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageIcon>icon.png</PackageIcon>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <Copyright>Copyright (c) 2026 Lewis John Villamor</Copyright>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Avalonia" Version="11.0.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="glyphs.json" LogicalName="MagicGlyphs.glyphs.json" />
+    <EmbeddedResource Include="Sounds\*.wav" LogicalName="MagicGlyphs.Sounds.%(Filename).wav" />
+    <None Include="icon.png" Pack="true" PackagePath="\" />
+    <None Include="..\README.md" Pack="true" PackagePath="\" />
+    <None Include="..\LICENSE" Pack="true" PackagePath="\" />
+  </ItemGroup>
+</Project>
