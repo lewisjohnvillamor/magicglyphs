@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.8.9
+
+- Every type and function in the TypeScript definitions is documented, and each JSR entry point has its own module docs and example.
+- JSR releases are published from GitHub Actions, with provenance.
+- Flutter package `magic_glyphs` for pub.dev.
+
 ## 0.8.8
 
 - Licence: the package (code, the 120 free icons and the sounds) is now MIT licensed. The paid icons have their own commercial licence (COMMERCIAL-LICENSE.md). The npm, JSR, MCP and Rust packages all use MIT.

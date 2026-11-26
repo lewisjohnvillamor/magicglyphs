@@ -1,7 +1,26 @@
-// Types for the Magic Glyphs web runtime: import MagicGlyphs from 'magic-glyphs'
+/**
+ * The Magic Glyphs runtime: draws, animates and plays animated icons with sound, and defines the `<magic-glyph>` element.
+ * Import `./all` for the runtime with the 120 free icons registered.
+ *
+ * @example
+ * ```ts
+ * import MagicGlyphs from "jsr:@magicglyphs/magic-glyphs";
+ * import icons from "jsr:@magicglyphs/magic-glyphs/free-icons";
+ * MagicGlyphs.register(icons);
+ * const svg = MagicGlyphs.svg("bell", { style: "duotone", size: 32 });
+ * ```
+ * @module
+ */
+/** The drawing style of an icon: thin lines, filled shapes, a tinted fill behind the lines, or frosted glass. */
 export type GlyphStyle = 'outline' | 'solid' | 'duotone' | 'glass';
-export interface GlyphPlayer { play(): void; }
+/** An element made playable with MagicGlyphs.attach(). */
+export interface GlyphPlayer {
+  /** Play the icon's animation, and its sound when sound is on. */
+  play(): void;
+}
+/** How one icon's sound plays. Every field is optional; leave one out to keep the icon's own setting. */
 export interface GlyphSoundOptions {
+  /** A sound name from sound.names(), in place of the icon's own sound. */
   sound?: string;
   /** 0 to 2. */
   volume?: number;
@@ -22,9 +41,11 @@ export interface GlyphSoundOptions {
 export type GlyphSoundStep = ['t', number, number, number, number, 'sine' | 'triangle' | 'square' | 'sawtooth', number?] | ['n', number, number, number, number, number, number?];
 /** Your own sound: an audio file, or a design made of steps. */
 export type GlyphCustomSound = { src: string } | { synth: GlyphSoundStep[] };
+/** Sound for every icon: turn it on, play sounds, shape them, add your own. Available as MagicGlyphs.sound. */
 export interface GlyphSound {
   /** Turn sound on or off for every icon. Off by default. */
   enable(on?: boolean): void;
+  /** True when sound is on for every icon and the visitor has not muted it. */
   enabled(): boolean;
   /** Get or set the volume, 0 to 1. */
   volume(v?: number): number;
@@ -56,6 +77,7 @@ export interface GlyphSound {
   steps(name: string): GlyphSoundStep[] | null;
   /** The cleaned copy of a custom sound, or null when it is not valid. */
   check(sound: unknown): GlyphCustomSound | null;
+  /** True once the visitor has clicked or pressed a key, which browsers require before playing sound. */
   unlocked(): boolean;
   /** Turn sound on or off for every icon and remember the choice in this browser (a visitor's mute switch). */
   toggle(on?: boolean): boolean;
@@ -66,6 +88,7 @@ export interface GlyphSound {
   /** Encode a rendered sound as a WAV file. */
   wav(buffer: AudioBuffer): ArrayBuffer;
 }
+/** The Magic Glyphs runtime: registers icon data, draws icons as SVG, plays them, and defines the <magic-glyph> element. */
 export interface MagicGlyphsRuntime {
   /** Add icon data, from a generated component or magic-glyphs/icons.json. */
   register(icons: unknown): MagicGlyphsRuntime;
@@ -73,10 +96,15 @@ export interface MagicGlyphsRuntime {
   svg(name: string, options?: { style?: GlyphStyle; size?: number | string; title?: string }): string;
   /** Make an element holding the icon's SVG playable. */
   attach(element: Element, name: string): GlyphPlayer;
+  /** True when an icon with this name is registered. */
   has(name: string): boolean;
+  /** The names of every registered icon. */
   names(): string[];
+  /** Sound for every icon: turn it on, play, shape and add sounds. */
   sound: GlyphSound;
+  /** Other helpers the runtime exposes, such as state() and transform(), used by the framework components. */
   [key: string]: unknown;
 }
+/** The Magic Glyphs runtime. In a page it also defines the <magic-glyph> and <magic-glyphs-sound-toggle> elements. */
 declare const MagicGlyphs: MagicGlyphsRuntime;
 export default MagicGlyphs;

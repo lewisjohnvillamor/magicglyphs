@@ -1,0 +1,24 @@
+# Publishes the JSR package (jsr.json) from GitHub, so each release carries provenance:
+# a public record that it was built from this repository.
+# Runs when jsr.json changes on main (a new version), or by hand from the Actions tab.
+# Needs this repository linked in the package settings on jsr.io.
+name: Publish to JSR
+on:
+  push:
+    branches: [main]
+    paths: [jsr.json]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npx jsr publish

@@ -1,6 +1,6 @@
 {
   "name": "@magicglyphs/magic-glyphs",
-  "version": "0.8.8",
+  "version": "0.8.9",
   "exports": {
     ".": "./jsr/runtime.js",
     "./all": "./jsr/all.js",
