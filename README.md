@@ -16,7 +16,14 @@
 
 ```bash
 npm install magic-glyphs
+# or
+yarn add magic-glyphs
+pnpm add magic-glyphs
+bun add magic-glyphs
+deno add npm:magic-glyphs
 ```
+
+Rust: `cargo add magic-glyphs` ([crates.io](https://crates.io/crates/magic-glyphs)). No install at all: `<script src="https://cdn.jsdelivr.net/npm/magic-glyphs/web/magic-glyphs.all.js" defer></script>` gives you the free icons.
 
 The command line tool needs Node.js 18 or later. The browser code has no dependencies.
 
