@@ -1,8 +1,10 @@
 # Magic Glyphs: animated icons with sound
 
-[![npm](https://img.shields.io/npm/v/magic-glyphs?logo=npm&label=npm)](https://www.npmjs.com/package/magic-glyphs) [![crates.io](https://img.shields.io/crates/v/magic-glyphs?logo=rust&label=crates.io)](https://crates.io/crates/magic-glyphs) [![MCP Registry](https://img.shields.io/badge/MCP_Registry-listed-000000?logo=modelcontextprotocol)](https://registry.modelcontextprotocol.io/v0.1/servers?search=io.github.lewisjohnvillamor/magic-glyphs)
+[![npm](https://img.shields.io/npm/v/magic-glyphs?logo=npm&label=npm)](https://www.npmjs.com/package/magic-glyphs) [![crates.io](https://img.shields.io/crates/v/magic-glyphs?logo=rust&label=crates.io)](https://crates.io/crates/magic-glyphs) [![JSR](https://jsr.io/badges/@magicglyphs/magic-glyphs)](https://jsr.io/@magicglyphs/magic-glyphs) [![NuGet](https://img.shields.io/nuget/v/MagicGlyphs.Avalonia?logo=nuget&label=NuGet)](https://www.nuget.org/packages/MagicGlyphs.Avalonia) [![MCP Registry](https://img.shields.io/badge/MCP_Registry-listed-000000?logo=modelcontextprotocol)](https://registry.modelcontextprotocol.io/v0.1/servers?search=io.github.lewisjohnvillamor/magic-glyphs) [![GitHub stars](https://img.shields.io/github/stars/lewisjohnvillamor/magicglyphs?style=social)](https://github.com/lewisjohnvillamor/magicglyphs/stargazers)
 
 **Animated icons with sound, for the web, mobile, desktop, games and design tools.** Every icon has its own spring animation and a short sound you can shape, in four styles: outline, solid, duotone and glass. It includes an icon maker for your own artwork, a command line tool, and an MCP server so coding assistants can insert icons for you.
+
+> If Magic Glyphs saves you time, please [star it on GitHub](https://github.com/lewisjohnvillamor/magicglyphs). Stars help other developers find it.
 
 ![Magic Glyphs: animated icons with sound, plus a maker for your own](https://magicglyphs.com/cover.png)
 
@@ -30,10 +32,18 @@ npm install magic-glyphs
 yarn add magic-glyphs
 pnpm add magic-glyphs
 bun add magic-glyphs
-deno add npm:magic-glyphs
+deno add jsr:@magicglyphs/magic-glyphs   # or: npx jsr add @magicglyphs/magic-glyphs
 ```
 
-Rust: `cargo add magic-glyphs` ([crates.io](https://crates.io/crates/magic-glyphs)). No install at all: `<script src="https://cdn.jsdelivr.net/npm/magic-glyphs/web/magic-glyphs.all.js" defer></script>` gives you the free icons.
+| Platform | Install |
+|---|---|
+| Rust | `cargo add magic-glyphs` ([crates.io](https://crates.io/crates/magic-glyphs)) |
+| Avalonia (.NET) | `dotnet add package MagicGlyphs.Avalonia` ([NuGet](https://www.nuget.org/packages/MagicGlyphs.Avalonia)) |
+| Godot 4 | the [magicglyphs-godot](https://github.com/lewisjohnvillamor/magicglyphs-godot) add-on |
+| Coding assistants | `claude mcp add magic-glyphs -- npx -y magic-glyphs-mcp` ([MCP Registry](https://registry.modelcontextprotocol.io/v0.1/servers?search=io.github.lewisjohnvillamor/magic-glyphs)) |
+| Everything else | the [command line tool](https://magicglyphs.com/docs/cli/) exports for SwiftUI, Compose, Flutter, React Native, WinUI, MAUI, Qt, Unity, Lottie, GIF and MP4 |
+
+ No install at all: `<script src="https://cdn.jsdelivr.net/npm/magic-glyphs/web/magic-glyphs.all.js" defer></script>` gives you the free icons.
 
 The command line tool needs Node.js 18 or later. The browser code has no dependencies.
 
@@ -206,7 +216,7 @@ Buy a licence at **[magicscraper.gumroad.com/l/vjaxbp](https://magicscraper.gumr
 
 ## Limitations
 
-- **Native app components** (SwiftUI, Compose, Flutter, WinUI, MAUI, Avalonia, Godot, Unity) are generated from tested exports but have not yet been run in those tools. The Qt and Rust outputs have been rendered and tested.
+- **Native app components:** the Flutter package, the Avalonia NuGet package and the Godot add-on are built and tested in Flutter, Avalonia 11 and 12, and Godot 4.3 to 4.7, and the Qt and Rust outputs are rendered and tested. The per-icon SwiftUI, Compose, WinUI, MAUI and Unity exports are generated from the same tested data but have not yet been run in those tools.
 - **MP4 and WebM from the command line** need ffmpeg; the icon maker makes them in the browser without it.
 - **Sound in native apps** comes as a separate `.wav` file; Lottie and static SVG themselves are silent.
 - **Glass style** is not available in Lottie, native or static SVG exports.
