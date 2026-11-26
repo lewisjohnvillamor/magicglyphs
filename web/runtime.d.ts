@@ -44,6 +44,10 @@ export interface GlyphSound {
   names(): string[];
   /** The built-in sounds by family (interface, alerts, motion, impacts, nature, musical, game, machines), plus yours. */
   groups(): Record<string, string[]>;
+  /** Add a pack of sounds, such as the extra pack: import pack from 'magic-glyphs/sounds'. */
+  add(pack: { groups?: Record<string, string[]>; sounds: Record<string, GlyphSoundStep[]> }): MagicGlyphsRuntime;
+  /** True for the 100 sounds built into the runtime. */
+  builtIn(name: string): boolean;
   /** Add your own named sound; null removes it. Built-in names cannot be replaced. */
   define(name: string, sound: GlyphCustomSound | null): MagicGlyphsRuntime;
   /** Load an audio file ahead of its first play. */

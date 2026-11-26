@@ -118,7 +118,7 @@ Every icon has a short synthesized sound matched to its motion, panned left or r
 
 | Setting | Range |
 |---|---|
-| `sound-name` | any of the 100 sounds |
+| `sound-name` | any of the 100 built-in sounds, or the 428 in the extra pack (`import pack from 'magic-glyphs/sounds'; MagicGlyphs.sound.add(pack)`) |
 | `sound-src` | your own audio file: a URL or `data:` URI |
 | `sound-volume` | 0 to 2 |
 | `sound-pitch` | -12 to 12 semitones |

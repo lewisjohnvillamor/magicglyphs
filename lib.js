@@ -1,6 +1,8 @@
 // Shared by the CLI and the MCP server: load the set, search it, and produce each output format.
 const fs=require('fs'),path=require('path');
 const MG=require('./web/runtime.js');
+// the extra sound pack, so the command line tool and MCP server know every sound (pages load it only when asked)
+try{MG.sound.add(require('./web/sounds-more.js'))}catch(e){}
 const Lic=require('./licence.js');
 // The published package carries the free icons. After `magic-glyphs login`, the full set is downloaded to the
 // user's home folder and used from there for as long as the stored licence key stays valid.

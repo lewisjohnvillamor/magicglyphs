@@ -209,7 +209,7 @@
   var num=function(v,d,lo,hi){v=parseFloat(v);return isFinite(v)?Math.max(lo,Math.min(hi,v)):d};
   // ---- custom sounds: a designed synth (a list of steps) or an audio file, attached to an icon (S.custom) or named with sound.define ----
   // a step is ['t', hz, start s, length s, level 0-1, wave, end hz?] for a tone or ['n', hz, end hz, start s, length s, level 0-1, q?] for filtered noise
-  var WAVES={sine:1,triangle:1,square:1,sawtooth:1},DEFS={},BUFS={},LOADING={};
+  var WAVES={sine:1,triangle:1,square:1,sawtooth:1},DEFS={},BUFS={},LOADING={},EXTRA={},EXTRA_GROUPS={};
   var fin=function(v,lo,hi){return typeof v==='number'&&isFinite(v)&&v>=lo&&v<=hi};
   function cleanSteps(a){if(!Array.isArray(a)||!a.length||a.length>48)return null;var out=[];
     for(var i=0;i<a.length;i++){var x=a[i];if(!Array.isArray(x))return null;
@@ -230,7 +230,8 @@
       delete LOADING[src];return BUFS[src]={buf:buf,gain:pk>1e-4?Math.min(6,.45/pk):1}},function(e){delete LOADING[src];throw e})}
   function sample(out,b){var C=cur.C,s=C.createBufferSource(),a=C.createGain();s.buffer=b.buf;if(s.playbackRate)s.playbackRate.value=cur.pm*cur.sp;a.gain.value=b.gain;s.connect(a);a.connect(out);s.start(cur.t0)}
   // the definition behind a sound name, if it is not built in
-  function defOf(o){return o.sound==='custom'?o.custom:DEFS[o.sound]}
+  // an icon may carry the steps of a sound from the extra pack, so it plays even where the pack is not loaded
+  function defOf(o){return o.sound==='custom'?o.custom:DEFS[o.sound]||(o.custom&&!SOUNDS[o.sound]?o.custom:null)}
   function synthFn(st){return function(o){st.forEach(function(x){x[0]==='t'?tone(o,x[1],x[2],x[3],x[4],x[5],x[6]):noise(o,x[1],x[2],x[3],x[4],x[5],x[6])})}}
   // settings for one play: defaults < sound.set(icon) < the icon's own data (ic.S) < attributes on the element
   function settings(ic,el,extra){var o={},k;for(k in DEF)o[k]=DEF[k];
@@ -293,7 +294,13 @@
       for(var i=0,o=44;i<n;i++,o+=4){v.setInt16(o,Math.max(-1,Math.min(1,L[i]))*32767,true);v.setInt16(o+2,Math.max(-1,Math.min(1,R[i]))*32767,true)}return ab},
     names:function(){return Object.keys(SOUNDS).concat(Object.keys(DEFS))},
     // the built-in sounds by family: {interface:[...], alerts:[...], ...}
-    groups:function(){var g={};for(var k in GROUPS)g[k]=GROUPS[k].slice();var mine=Object.keys(DEFS);if(mine.length)g.yours=mine;return g},
+    groups:function(){var g={},k;for(k in GROUPS)g[k]=GROUPS[k].slice();for(k in EXTRA_GROUPS)g[k]=(g[k]||[]).concat(EXTRA_GROUPS[k]);
+      var mine=Object.keys(DEFS).filter(function(n){return !EXTRA[n]});if(mine.length)g.yours=mine;return g},
+    // add a pack of sounds, like the extra pack in magic-glyphs/sounds: {groups:{family:[names]}, sounds:{name:steps}}
+    add:function(pack){if(!pack||!pack.sounds)return api;var n,c;for(n in pack.sounds){if(SOUNDS[n]||!/^[a-z0-9-]{1,40}$/.test(n))continue;c=cleanDef({synth:pack.sounds[n]});if(c){DEFS[n]=c;EXTRA[n]=1}}
+      for(var g in pack.groups||{}){var have=EXTRA_GROUPS[g]||[];EXTRA_GROUPS[g]=have.concat((pack.groups[g]||[]).filter(function(x){return EXTRA[x]&&have.indexOf(x)<0}))}return api},
+    // true for the 100 sounds built into the runtime
+    builtIn:function(name){return !!SOUNDS[name]},
     // your own sound under a name: sound.define('pling', {src:'/sounds/pling.mp3'}) or {synth:[['t',880,0,.2,.3,'sine']]}; null removes it
     define:function(name,d){if(!/^[a-z0-9-]{1,40}$/.test(name)||SOUNDS[name])throw new Error('Pick a sound name of lowercase letters, digits and dashes that is not built in.');
       if(d===null){delete DEFS[name];return api}var c=cleanDef(d);if(!c)throw new Error('A sound needs {src: a URL or data: URI} or {synth: a list of steps}.');DEFS[name]=c;return api},

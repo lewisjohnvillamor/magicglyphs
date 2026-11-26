@@ -17,6 +17,10 @@
       "default": "./web/runtime.js"
     },
     "./all": "./web/magic-glyphs.all.js",
+    "./sounds": {
+      "types": "./web/sounds-more.d.ts",
+      "default": "./web/sounds-more.js"
+    },
     "./react": {
       "types": "./react/index.d.ts",
       "default": "./react/index.js"

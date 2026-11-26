@@ -4,6 +4,8 @@
 
 - 61 new sounds, 100 in all, grouped into eight families: interface, alerts, motion, impacts, nature, musical, game and machines. Every one is level-matched and none clip. `sound.groups()` lists them.
 - Your own sounds: `sound-src` on an element (or `soundOptions.src` in React and Vue) plays an audio file; `sound.define(name, { src } | { synth })` adds a named sound; icons can carry their own sound in `S.custom`. Pitch, speed, tone, stereo and delay apply to all of them.
+- An optional pack of 428 more sounds (528 in all), in ten families including sci-fi and cartoon: `import pack from 'magic-glyphs/sounds'` then `MagicGlyphs.sound.add(pack)`, or `web/sounds-more.js`. It is a separate 19 KB file, so pages that do not use it stay small. Icons carry the steps of a pack sound they use, so they play it without the pack.
+- `sound.add(pack)` and `sound.builtIn(name)`.
 - `sound.steps(name)` gives the tones and noise a built-in sound is made of, to start a design from. `sound.preload(src)` and `sound.check(sound)`.
 - The command line tool renders custom sounds to WAV, including WAV audio stored in an icon.
 - Install with yarn, pnpm, bun, deno or a CDN script tag; README lists them all.
