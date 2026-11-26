@@ -28,6 +28,15 @@ server.registerTool('get_icon',{title:'Get icon',
     if(!L.byName.has(name)){const s=L.search(name,{limit:5}).map(x=>x.name);return err('No icon named "'+name+'".'+(s.length?' Did you mean: '+s.join(', ')+'?':' Use search_icons to find one.'))}
     {const Lic=require('../licence.js'),paid=L.locked([name]);if(paid.length)return err(Lic.lockedMessage(paid))}
     try{const f=L.render(name,format||'html',{style,color,secondary,size});return text('File: '+f.file+'\n\n'+f.text)}catch(e){return err(e.message)}});
+server.registerTool('list_sounds',{title:'List sounds',
+  description:'List the built-in icon sounds by family, and how to change an icon\'s sound or give it your own audio file or designed sound. Use it when the user wants a different or custom sound.',
+  inputSchema:{family:z.string().optional().describe('Only one family, e.g. "alerts" or "game"')},annotations:{readOnlyHint:true}},
+  async({family})=>{const g=L.MG.sound.groups();delete g.yours;if(family&&!g[family])return err('No sound family "'+family+'". Families: '+Object.keys(g).join(', '));
+    const fams=family?{[family]:g[family]}:g;
+    return text(Object.keys(fams).map(k=>k+': '+fams[k].join(', ')).join('\n')+'\n\nUse one on an element: <magic-glyph name="bell" sound sound-name="ping"></magic-glyph>; in React or Vue: soundOptions={{ sound: \'ping\' }}.'+
+      '\nYour own audio file: sound-src="/sounds/x.mp3" (React and Vue: soundOptions={{ src: \'/sounds/x.mp3\' }}), or MagicGlyphs.sound.define(\'name\', { src: \'/sounds/x.mp3\' }).'+
+      '\nA designed sound: MagicGlyphs.sound.define(\'name\', { synth: [[\'t\', hz, startSec, lengthSec, level, wave, endHz?], [\'n\', fromHz, toHz, startSec, lengthSec, level, focus?]] }). MagicGlyphs.sound.steps(\'chime\') returns the steps of a built-in sound to start from.'+
+      '\nSettings: volume 0-2, pitch -12..12 semitones, speed 0.5-2, tone -1..1, pan 0-1, delay ms or "auto". Details: https://magicglyphs.com/docs/sound/')});
 server.registerTool('usage_guide',{title:'Usage guide',description:'How to install and use Magic Glyphs in a given kind of project.',
   inputSchema:{platform:z.enum(['html','react','vue','angular','wordpress','shopify','rust','ios','android','windows','flutter']).describe('The project type')},annotations:{readOnlyHint:true}},
   async({platform})=>text(require('./guides.js')[platform]));
