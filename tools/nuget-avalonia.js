@@ -395,6 +395,8 @@ internal static class SoundPlayback
 
   fs.writeFileSync(path.join(out, 'README.md'), `# Magic Glyphs for Avalonia
 
+[![GitHub stars](https://img.shields.io/github/stars/lewisjohnvillamor/magicglyphs?style=social)](https://github.com/lewisjohnvillamor/magicglyphs/stargazers)
+
 Animated icons with sound for Avalonia 11 and 12. Each icon springs into motion when it is hovered, clicked or appears, and can play its own short sound.
 
 - **${free.length} free icons** in outline, solid and duotone.

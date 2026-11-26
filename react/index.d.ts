@@ -14,6 +14,8 @@ export interface GlyphSoundOptions {
   tone?: number;
   /** 0 centred to 1 follows the icon across the screen. Default 1. */
   pan?: number;
+  /** 0 to 1. How much the sound follows the icon's own movement while it plays: sideways motion sweeps it left and right, rising motion brightens it. Default 1; 0 keeps it still. */
+  move?: number;
   /** Milliseconds before the sound, or "auto" to line impact sounds up with the motion. */
   delay?: number | 'auto';
   /** Your own audio file instead of a named sound: a URL or a data: URI. */

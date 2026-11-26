@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.8.10
+
+- Sound moves with the icon: sideways motion sweeps the sound across the stereo field, and rising motion brightens it. New `move` setting (0 to 1, default 1; `sound-move` on the element, `soundOptions.move` in React and Vue). Exported sound files follow the motion too.
+- Louder and more even sound: the default master volume is now 0.7 (was 0.5), and 184 sounds that came across quieter than the rest (very short clicks, and bass that phone and laptop speakers cannot play) get a measured lift. `tools/sound-lift.js` works the table out again whenever sounds change.
+- `SoundToggle` in React no longer causes a hydration mismatch in Next.js and other server-rendered apps.
+
 ## 0.8.9
 
 - Every type and function in the TypeScript definitions is documented, and each JSR entry point has its own module docs and example.

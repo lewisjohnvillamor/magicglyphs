@@ -1,5 +1,7 @@
 # magic-glyphs (Rust)
 
+[![GitHub stars](https://img.shields.io/github/stars/lewisjohnvillamor/magicglyphs?style=social)](https://github.com/lewisjohnvillamor/magicglyphs/stargazers)
+
 Animated icons with sound for Rust apps. Each icon is a few layers of SVG paths plus its spring motion,
 pre-computed as one 2D matrix per layer per frame. Ask for the SVG at any moment of the motion and draw it with
 whatever you use: `resvg`/`tiny-skia`, `egui` (with an SVG image loader), `iced`, `slint`, or a webview.

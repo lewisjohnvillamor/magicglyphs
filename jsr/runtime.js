@@ -86,8 +86,8 @@ const MagicGlyphs = (function(){
   // ---- sound: small synthesized effects, off until asked for. Stereo position follows where the icon sits on screen. ----
   // Every sound can be shaped per icon: volume (0-2), pitch (semitones, -12..12), speed (0.5-2), tone (-1 softer .. 1 brighter),
   // pan (0 = centred, 1 = follows the icon across the screen) and delay (ms; "auto" lines impact sounds up with the motion).
-  var AC=typeof window!=='undefined'&&(window.AudioContext||window.webkitAudioContext),ctx=null,master=null,soundAll=false,unlocked=false,vol=.5,hooked=false;
-  var muted=false,cur=null,DEF={volume:1,pitch:0,speed:1,tone:0,pan:1,delay:'auto'},PER={};
+  var AC=typeof window!=='undefined'&&(window.AudioContext||window.webkitAudioContext),ctx=null,master=null,soundAll=false,unlocked=false,vol=.7,hooked=false;
+  var muted=false,cur=null,DEF={volume:1,pitch:0,speed:1,tone:0,pan:1,move:1,delay:'auto'},PER={};
   function noiseFor(c){if(!c._mgNoise){var b=c.createBuffer(1,c.sampleRate,c.sampleRate),d=b.getChannelData(0);for(var i=0;i<d.length;i++)d[i]=Math.random()*2-1;c._mgNoise=b}return c._mgNoise}
   function ensureAudio(){if(!AC)return null;try{
       if(!ctx){ctx=new AC();master=ctx.createGain();master.gain.value=vol;master.connect(ctx.destination)}
@@ -221,6 +221,9 @@ const MagicGlyphs = (function(){
   };
   // loudness trims measured offline so every sound plays at about the same level and none clips (see tools/sound-audit.js)
   var NORM={"bounce":0.55,"siren":1.67,"bubble":0.85,"crunch":2.48,"sizzle":2.44,"fizz":2.04,"horn":0.9,"rotor":0.93,"chirp":0.98,"whistle":0.82,"ding":0.62,"thump":0.5,"liftoff":1.34,"whoosh":1.76,"swish":1.73,"breeze":2.5,"chime":0.71,"glow":1.14,"soft":1.08,"tick2":0.83,"blink":1.8,"ratchet":1.15,"clank":0.96,"click":0.63,"pop":0.58,"pops":0.76,"drop":0.71,"zap":1.04,"notes":0.9,"shutter":1.42,"knock":0.51,"success":1,"tap":0.93,"beep":1.05,"alert":1.07,"buzz":1.2,"coin":0.7,"scribble":2.5,"ticktock":0.88,"boop":0.68,"blip":1,"hover":1.88,"switchon":0.97,"switchoff":0.97,"typing":2.19,"flip":1.46,"plink":0.77,"pluck":1.74,"marimba":0.64,"harp":0.84,"bell":0.76,"gong":0.56,"magic":1.29,"sparkle":1.04,"ping":0.68,"pong":0.63,"incoming":0.85,"bikebell":0.88,"trill":1.74,"alarm":1.05,"countdown":0.85,"tada":1,"error":0.93,"warning":1.54,"fail":1.19,"cancel":1.17,"unlock":0.97,"lock":0.77,"rise":1.4,"fall":1.27,"swoop":0.9,"whip":1.15,"zipper":1.88,"boing":0.88,"wobble":1.37,"squeak":1.27,"gulp":0.69,"drip":0.82,"splash":1.11,"rain":1.3,"thunder":1.12,"rumble":1.2,"crackle":2.37,"crumple":1.85,"clap":1.96,"heartbeat":0.6,"woodblock":0.45,"clang":0.99,"kick":0.35,"snare":0.76,"hihat":0.9,"boom":0.43,"kaching":0.85,"levelup":1.03,"powerup":1.14,"powerdown":1.06,"jump":0.9,"laser":1.01,"robot":1.34,"engine":1.31};
+  // extra lift for sounds that come across quieter than the rest: very short clicks, and bass that phone and laptop speakers cannot play.
+  // measured halfway between full-range and small-speaker loudness (tools/sound-lift.js), and never past -1 dBFS
+  var LIFT={"bounce":1.35,"bubble":1.31,"crunch":1.65,"rotor":1.48,"chirp":2.12,"swish":1.39,"tick2":2.08,"blink":2.33,"ratchet":1.62,"click":1.4,"pop":1.4,"shutter":1.85,"knock":1.71,"tap":1.75,"scribble":2.16,"ticktock":1.97,"blip":1.66,"hover":2.82,"switchon":1.35,"switchoff":1.34,"typing":1.84,"flip":1.9,"sparkle":1.2,"lock":1.4,"whip":1.59,"zipper":1.62,"squeak":1.26,"drip":1.2,"crackle":1.9,"crumple":1.57,"heartbeat":1.39,"woodblock":1.52,"hihat":2.17,"woodtap":1.59,"woodrelease":1.78,"glasstap":2.31,"glassclick":1.54,"glasspress":1.36,"glassrelease":2.51,"metaltap":2.05,"metalclick":1.33,"metalpress":1.2,"metalrelease":2.24,"plastictap":1.84,"plasticrelease":1.89,"papertap":1.6,"paperclick":1.88,"paperpress":2.14,"paperrelease":2.37,"rubbertap":2.04,"rubberclick":1.28,"rubberpress":1.28,"rubberrelease":1.78,"stonetap":1.86,"stoneclick":1.2,"stonepress":1.21,"stonerelease":1.79,"crystaltap":2.44,"crystalclick":1.63,"crystalpress":1.46,"crystalrelease":2.58,"toggleon":1.73,"toggleoff":1.75,"slider":1.31,"expand":1.4,"menuopen":1.44,"menuclose":1.39,"tabswitch":1.47,"copy":1.4,"paste":1.56,"cut":1.88,"undo":1.4,"redo":1.39,"save":1.4,"upload":1.4,"syncing":1.25,"loading":1.56,"scroll":2.87,"dragstart":1.63,"dragdrop":1.39,"unpin":1.4,"keypress":1.99,"spacebar":1.82,"enterkey":2.03,"backspace":1.4,"typewriter":1.4,"notifydot":1.56,"bubblepop":1.48,"lightswitch":2.16,"focus":1.95,"nudge":1.19,"timerdone":1.64,"key":1.75,"oneup":1.4,"shrink":1.4,"hit":1.42,"selectitem":1.53,"startgame":1.22,"pausegame":1.48,"doublejump":1.2,"shoot":1.44,"bonus":1.49,"dash":1.32,"block":1.45,"menutick":2.83,"spring":1.75,"computer":1.4,"datastream":1.36,"glitch":1.28,"boot":1.71,"tractor":1.62,"phaser":1.21,"robotwalk":1.53,"beepboop":1.56,"tiptoe":1.89,"sneak":1.32,"running":1.76,"tweet":1.42,"wobbly":1.34,"plop":1.2,"thud2":1.23,"poke":1.49,"plink2":1.33,"windhowl":1.62,"hail":1.71,"stream":1.32,"cricket":2.26,"frog":1.31,"birdtrill":1.49,"birdsong":1.19,"rustle":1.93,"snowstep":1.6,"lava":1.38,"droplets":2,"puddle":1.28,"rimshot":1.84,"clave":1.97,"shaker":1.86,"gavel":1.71,"punch":1.37,"slap":1.96,"woodhit":1.22,"whipcrack":2.15,"snaretight":1.41,"fingersnap":3.49,"knucklecrack":1.92,"basketball":1.35,"tennis":1.51,"golfhit":1.65,"bowling":1.71,"whooshshort":1.57,"whooshlow":1.33,"airswipe":1.91,"swordswing":1.22,"flagflap":1.54,"cardflick":1.68,"pageturn":1.19,"bookclose":1.37,"velcro":1.61,"spin":1.53,"slideout":1.2,"fold":1.44,"unfold":1.51,"rollaway":2.73,"toaster":1.4,"fridge":1.4,"drill":1.62,"saw":1.62,"printer":1.62,"faxmachine":1.32,"filmreel":2.02,"vinylscratch":1.56,"seatbelt":1.4,"turnsignal":2.55,"helicopter":1.48,"propeller":1.48,"sirenyelp":1.34,"alarmclock":1.68,"smokealarm":1.21,"doorlock":1.69,"keys":1.4,"dishwasher":1.31,"zipclose":1.73,"lighter":1.4};
   var num=function(v,d,lo,hi){v=parseFloat(v);return isFinite(v)?Math.max(lo,Math.min(hi,v)):d};
   // ---- custom sounds: a designed synth (a list of steps) or an audio file, attached to an icon (S.custom) or named with sound.define ----
   // a step is ['t', hz, start s, length s, level 0-1, wave, end hz?] for a tone or ['n', hz, end hz, start s, length s, level 0-1, q?] for filtered noise
@@ -252,10 +255,10 @@ const MagicGlyphs = (function(){
   function settings(ic,el,extra){var o={},k;for(k in DEF)o[k]=DEF[k];
     var add=function(x){if(x)for(var k in x)if(x[k]!==undefined&&x[k]!==null&&x[k]!=='')o[k]=x[k]};
     if(ic){add(PER[ic.n]);add(ic.S)}
-    if(el&&el.getAttribute)add({sound:el.getAttribute('sound-name'),volume:el.getAttribute('sound-volume'),pitch:el.getAttribute('sound-pitch'),speed:el.getAttribute('sound-speed'),tone:el.getAttribute('sound-tone'),pan:el.getAttribute('sound-pan'),delay:el.getAttribute('sound-delay'),src:el.getAttribute('sound-src')});
+    if(el&&el.getAttribute)add({sound:el.getAttribute('sound-name'),volume:el.getAttribute('sound-volume'),pitch:el.getAttribute('sound-pitch'),speed:el.getAttribute('sound-speed'),tone:el.getAttribute('sound-tone'),pan:el.getAttribute('sound-pan'),move:el.getAttribute('sound-move'),delay:el.getAttribute('sound-delay'),src:el.getAttribute('sound-src')});
     add(extra);o.sound=o.sound||(ic&&ic.s)||null;
     if(o.src){o.custom=cleanDef({src:o.src});o.sound='custom';delete o.src}else if(o.custom)o.custom=cleanDef(o.custom);
-    o.volume=num(o.volume,1,0,2);o.pitch=num(o.pitch,0,-12,12);o.speed=num(o.speed,1,.5,2);o.tone=num(o.tone,0,-1,1);o.pan=num(o.pan,1,0,1);
+    o.volume=num(o.volume,1,0,2);o.pitch=num(o.pitch,0,-12,12);o.speed=num(o.speed,1,.5,2);o.tone=num(o.tone,0,-1,1);o.pan=num(o.pan,1,0,1);o.move=num(o.move,1,0,1);
     o.delay=o.delay==='auto'?(ic?beat(ic,o.sound):0):num(o.delay,0,0,2000);return o}
   // impact sounds wait for the moment of impact. The animations mark it: a reaction (a squash, a tray dipping, a lid jumping)
   // is a part of the motion that starts later than the rest; its start time is when the hit happens. No reaction: play at once.
@@ -263,19 +266,33 @@ const MagicGlyphs = (function(){
   function beat(ic,name){if(!IMPACT[name]||!ic.A)return 0;if(ic._beat!==undefined)return ic._beat;var hit=0;
     ic.A.forEach(function(a){var t=a.k&&a.k[0]&&a.k[0][0];if(t>40&&t<600&&(!hit||t<hit))hit=t});
     return ic._beat=hit}
-  // build the sound graph into any audio context: volume and tone, then position
-  function render(c,dest,o,pan){var def=defOf(o),fn=def?(def.synth?synthFn(def.synth):def.src&&BUFS[def.src]?function(g){sample(g,BUFS[def.src])}:null):SOUNDS[o.sound];if(!fn)return false;
-    var g=c.createGain();g.gain.value=(def?1:NORM[o.sound]||1)*o.volume;var node=g;
+  // The icon's overall movement while it plays: the average offset of its moving parts, sampled 60 times a second,
+  // in icon units (an icon is 24 wide). Worked out once per icon from the same springs that draw it. null if it barely moves.
+  function path(ic){if(!ic||!ic.A)return null;if(ic._path!==undefined)return ic._path;
+    var s=state(ic),xs=[],ys=[],mx=0,my=0;s.start();
+    for(var i=0;i<150;i++){var acc=s.step(1/60);if(!acc)break;var n=0,x=0,y=0;for(var k in acc){x+=acc[k].tx;y+=acc[k].ty;n++}x/=n||1;y/=n||1;xs.push(x);ys.push(y);mx=Math.max(mx,Math.abs(x));my=Math.max(my,Math.abs(y))}
+    return ic._path=mx>.8||my>.8?{x:mx>.8?xs:null,y:my>.8?ys:null}:null}
+  // automation along the path: one point every 1/60 s from the moment the motion starts
+  function follow(param,t0,vals,fn){param.setValueAtTime(fn(vals[0]),t0);for(var i=1;i<vals.length;i++)param.linearRampToValueAtTime(fn(vals[i]),t0+i/60)}
+  // build the sound graph into any audio context: volume and tone, then position. mv (optional) is the icon's movement:
+  // sideways motion sweeps the stereo position from where the icon sits, and rising motion brightens the sound a little.
+  function render(c,dest,o,pan,mv){var def=defOf(o),fn=def?(def.synth?synthFn(def.synth):def.src&&BUFS[def.src]?function(g){sample(g,BUFS[def.src])}:null):SOUNDS[o.sound];if(!fn)return false;
+    var g=c.createGain();g.gain.value=(def?1:NORM[o.sound]||1)*(LIFT[o.sound]||1)*o.volume;var node=g;
     if(o.tone<0){var lp=c.createBiquadFilter();lp.type='lowpass';lp.frequency.value=20000*Math.pow(2,o.tone*5);lp.Q.value=.5;g.connect(lp);node=lp}
     else if(o.tone>0){var hs=c.createBiquadFilter();hs.type='highshelf';hs.frequency.value=2500;hs.gain.value=o.tone*9;g.connect(hs);node=hs}
-    if(c.createStereoPanner&&pan){var p=c.createStereoPanner();p.pan.setValueAtTime(Math.max(-1,Math.min(1,pan)),c.currentTime);node.connect(p);p.connect(dest)}else node.connect(dest);
+    var mvx=mv&&mv.x&&o.move?mv.x:null,mvy=mv&&mv.y&&o.move?mv.y:null,clip=function(v){return Math.max(-1,Math.min(1,v))};
+    if(mvy&&c.createBiquadFilter){var lift=c.createBiquadFilter();lift.type='highshelf';lift.frequency.value=3000;
+      follow(lift.gain,c.currentTime,mvy,function(y){return Math.max(-6,Math.min(6,-y/24*40*o.move))});node.connect(lift);node=lift}
+    if(c.createStereoPanner&&(pan||mvx)){var p=c.createStereoPanner();p.pan.setValueAtTime(clip(pan),c.currentTime);
+      if(mvx)follow(p.pan,c.currentTime,mvx,function(x){return clip(pan+x/24*1.8*o.move)});node.connect(p);p.connect(dest)}else node.connect(dest);
     cur={C:c,pm:Math.pow(2,o.pitch/12),sp:o.speed,t0:c.currentTime+o.delay/1000};try{fn(g)}finally{cur=null}return true}
   // sound="off" on an element always wins, so decorative or autoplaying icons stay silent even when sound is on for the page
   function wantsSound(el){if(el&&el.getAttribute&&el.getAttribute('sound')==='off')return false;return soundAll||!!(el&&el.hasAttribute&&el.hasAttribute('sound'))}
   function playFor(ic,el,extra){if(muted||!unlocked||!ensureAudio())return false;var o=settings(ic,el,extra);if(!o.sound||!o.volume)return false;
     var def=defOf(o);if(def&&def.src&&!BUFS[def.src]){var asked=Date.now();load(def.src).then(function(){if(Date.now()-asked<700)playFor(ic,el,extra)},function(e){if(typeof console!=='undefined')console.warn('magic-glyphs: '+e.message)});return true}
     var pan=0;if(o.pan&&el&&el.getBoundingClientRect&&typeof innerWidth==='number'&&innerWidth>0){var r=el.getBoundingClientRect();pan=((r.left+r.width/2)/innerWidth*2-1)*.85*o.pan}
-    try{return render(ctx,master,o,pan)}catch(e){return false}}
+    var still=typeof matchMedia==='function'&&matchMedia('(prefers-reduced-motion: reduce)').matches;
+    try{return render(ctx,master,o,pan,still?null:path(ic))}catch(e){return false}}
   function playSound(name,el,extra){var x={sound:name};if(extra)for(var k in extra)x[k]=extra[k];return playFor(null,el,x)}
   // the visitor's own choice: muted silences every icon, even ones with the sound attribute, and is remembered in this browser
   var STORE='magic-glyphs-sound';
@@ -299,7 +316,7 @@ const MagicGlyphs = (function(){
     render:function(name,opts,Offline){var OAC=Offline||typeof window!=='undefined'&&(window.OfflineAudioContext||window.webkitOfflineAudioContext);if(!OAC)return Promise.reject(new Error('Offline audio is not available here.'));
       var o=REG[name]?settings(REG[name],null,opts):settings(null,null,Object.assign({sound:name},opts||{}));var c=new OAC(2,Math.ceil(44100*(2.6+o.delay/1000)),44100);
       var def=defOf(o);return (def&&def.src?load(def.src,c):Promise.resolve()).then(function(){
-        if(!render(c,c.destination,o,(opts&&opts.panTo)||0))throw new Error(o.sound==='custom'?'This icon\'s own sound is missing or not valid.':'No sound named "'+o.sound+'".');return c.startRendering()})},
+        if(!render(c,c.destination,o,(opts&&opts.panTo)||0,REG[name]&&o.move?path(REG[name]):null))throw new Error(o.sound==='custom'?'This icon\'s own sound is missing or not valid.':'No sound named "'+o.sound+'".');return c.startRendering()})},
     // encode a rendered buffer as a 16-bit stereo WAV file (ArrayBuffer), trimming the silence at the end
     wav:function(buf){var L=buf.getChannelData(0),R=buf.numberOfChannels>1?buf.getChannelData(1):L,n=L.length;
       while(n>1&&Math.abs(L[n-1])<1e-4&&Math.abs(R[n-1])<1e-4)n--;n=Math.min(L.length,n+Math.round(buf.sampleRate*.02));
