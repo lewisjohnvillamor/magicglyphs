@@ -366,7 +366,7 @@
         b.innerHTML='<svg xmlns="http://www.w3.org/2000/svg" width="'+size+'" height="'+size+'" viewBox="0 0 24 24" fill="none" stroke="currentColor" '+STROKE+' aria-hidden="true">'+(on?ON:OFF)+'</svg>'+(me.hasAttribute('show-label')?'<span>'+esc(on?(me.getAttribute('label-on')||'Sound on'):(me.getAttribute('label-off')||'Sound off'))+'</span>':'')};
       b.addEventListener('click',function(){unlocked=true;ensureAudio();var on=soundApi.toggle();if(on)playSound('tap',b)});
       document.addEventListener('magic-glyphs-sound',function(e){draw(e.detail.on)});
-      draw(soundApi.remember(this.getAttribute('default')==='on'))};
+      draw(soundApi.remember(this.getAttribute('default')==='on'||this.hasAttribute('default-on')))};
     customElements.define('magic-glyphs-sound-toggle',T)}
   return api;
 });

@@ -16,7 +16,8 @@ const MagicGlyph=defineComponent({name:'MagicGlyph',
     return()=>{const so={};if(props.soundOptions)for(const k of ['sound','volume','pitch','speed','tone','pan','move','delay','src'])if(props.soundOptions[k]!==undefined)so['sound-'+(k==='sound'?'name':k)]=String(props.soundOptions[k]);return h('span',{...so,ref:el,sound:props.sound?'':undefined,style:{display:'inline-flex'},innerHTML:html.value,
       onMouseenter:props.trigger==='hover'?play:undefined,onFocusin:props.trigger==='hover'?play:undefined,onClick:props.trigger==='hover'||props.trigger==='click'?play:undefined})};
   }});
+// (Vue renders `default` as a boolean HTML attribute on the server, so the on state goes in `default-on`.)
 // A speaker button visitors use to turn icon sounds on or off; their choice is remembered in the browser.
 const SoundToggle=defineComponent({name:'SoundToggle',props:{defaultOn:Boolean,size:{type:[Number,String],default:20},labelOn:String,labelOff:String,showLabel:Boolean},
-  setup(props){return()=>h('magic-glyphs-sound-toggle',{default:props.defaultOn?'on':'off',size:String(props.size),'label-on':props.labelOn,'label-off':props.labelOff,'show-label':props.showLabel?'':undefined})}});
+  setup(props){return()=>h('magic-glyphs-sound-toggle',{'default-on':props.defaultOn?'':undefined,size:String(props.size),'label-on':props.labelOn,'label-off':props.labelOff,'show-label':props.showLabel?'':undefined})}});
 module.exports={MagicGlyph,SoundToggle,register:MG.register,sound:MG.sound};
