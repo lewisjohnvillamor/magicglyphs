@@ -1,6 +1,12 @@
-# Creates a GitHub release when a version tag (v1.2.3) is pushed, with that version's notes from CHANGELOG.md.
+# Creates a GitHub release with that version's notes from CHANGELOG.md.
+# Run it from the Actions tab (Release → Run workflow, type the version, e.g. 0.8.9), or push a tag like v0.8.9.
 name: Release
 on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version to release, as in CHANGELOG.md (e.g. 0.8.9)'
+        required: true
   push:
     tags: ['v*']
 
@@ -14,8 +20,11 @@ jobs:
       - uses: actions/checkout@v4
       - name: Notes from CHANGELOG.md
         run: |
-          v="${GITHUB_REF_NAME#v}"
+          v="${{ github.event.inputs.version }}"
+          [ -z "$v" ] && v="${GITHUB_REF_NAME#v}"
+          echo "V=$v" >> "$GITHUB_ENV"
           awk -v v="$v" '$0=="## "v {on=1; next} /^## / {on=0} on' CHANGELOG.md > notes.md
+          if [ ! -s notes.md ]; then echo "No '## $v' section in CHANGELOG.md"; exit 1; fi
           {
             echo
             echo "**Install:** \`npm install magic-glyphs\` · \`deno add jsr:@magicglyphs/magic-glyphs\` · \`cargo add magic-glyphs\` · \`dotnet add package MagicGlyphs.Avalonia\`"
@@ -25,4 +34,4 @@ jobs:
       - name: Create the release
         env:
           GH_TOKEN: ${{ github.token }}
-        run: gh release create "$GITHUB_REF_NAME" --title "Magic Glyphs $GITHUB_REF_NAME" --notes-file notes.md --verify-tag
+        run: gh release create "v$V" --title "Magic Glyphs $V" --notes-file notes.md --target "$GITHUB_SHA"
