@@ -1,0 +1,28 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "io.github.lewisjohnvillamor/magic-glyphs",
+  "description": "Search 8,000+ animated icons with sound and insert them as React, Vue, HTML, SVG or Lottie.",
+  "repository": {
+    "url": "https://github.com/lewisjohnvillamor/magicglyphs",
+    "source": "github"
+  },
+  "version": "0.8.5",
+  "packages": [
+    {
+      "registryType": "npm",
+      "identifier": "magic-glyphs-mcp",
+      "version": "0.8.5",
+      "transport": {
+        "type": "stdio"
+      },
+      "environmentVariables": [
+        {
+          "name": "MAGIC_GLYPHS_KEY",
+          "description": "Optional, for build servers. Your licence key, so the paid icons can be used after npx magic-glyphs sync. On your own computer, run npx magic-glyphs login once instead. The 120 free icons work without it.",
+          "isRequired": false,
+          "isSecret": true
+        }
+      ]
+    }
+  ]
+}
