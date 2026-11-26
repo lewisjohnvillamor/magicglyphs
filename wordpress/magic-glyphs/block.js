@@ -8,7 +8,7 @@
   var opts = function (list) { return list.map(function (v) { return { label: v, value: v }; }); };
 
   wp.blocks.registerBlockType('magic-glyphs/icon', {
-    apiVersion: 2,
+    apiVersion: 3,
     title: __('Magic Glyph', 'magic-glyphs'),
     description: __('An animated icon with sound.', 'magic-glyphs'),
     category: 'media',

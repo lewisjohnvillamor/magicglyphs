@@ -4,7 +4,7 @@
  * Plugin URI:        https://magicglyphs.com/docs/web/#wordpress
  * Description:       Animated icons with sound. Add them with the Magic Glyph block, or the shortcodes [magic_glyph name="heart" sound="yes"] and [magic_glyphs_sound_toggle] for a visitor mute switch.
  * Version:           0.8.7
- * Requires at least: 6.0
+ * Requires at least: 6.3
  * Requires PHP:      7.4
  * Author:            Lewis John Villamor
  * Author URI:        https://magicglyphs.com
@@ -18,10 +18,11 @@ define('MAGIC_GLYPHS_VERSION', '0.8.7');
 
 add_action('init', function () {
     // everything is served from this plugin's own folder; nothing is loaded from other sites
-    wp_register_script('magic-glyphs', plugins_url('magic-glyphs.all.js', __FILE__), array(), MAGIC_GLYPHS_VERSION, true);
+    wp_register_script('magic-glyphs', plugins_url('magic-glyphs.all.js', __FILE__), array(), MAGIC_GLYPHS_VERSION, array('in_footer' => true, 'strategy' => 'defer'));
     wp_register_script('magic-glyphs-block', plugins_url('block.js', __FILE__), array('magic-glyphs', 'wp-blocks', 'wp-element', 'wp-block-editor', 'wp-components', 'wp-i18n'), MAGIC_GLYPHS_VERSION, true);
+    wp_set_script_translations('magic-glyphs-block', 'magic-glyphs');
     register_block_type('magic-glyphs/icon', array(
-        'api_version'     => 2,
+        'api_version'     => 3,
         'editor_script'   => 'magic-glyphs-block',
         'attributes'      => array(
             'name'    => array('type' => 'string', 'default' => 'heart'),

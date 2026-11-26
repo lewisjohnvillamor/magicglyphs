@@ -1,7 +1,7 @@
-=== Magic Glyphs: Animated Icons with Sound ===
+=== Magic Glyphs ===
 Contributors: lewisjohnvillamor
 Tags: icons, animated icons, svg icons, block, sound
-Requires at least: 6.0
+Requires at least: 6.3
 Tested up to: 7.1
 Requires PHP: 7.4
 Stable tag: 0.8.7
@@ -40,6 +40,10 @@ You can also type the element into a Custom HTML block: `<magic-glyph name="bell
 = The full library =
 
 These 120 icons are free for personal and commercial use. The full Magic Glyphs library has more than 8,000 icons, an icon maker for your own artwork, and versions for React, Vue, iOS, Android, Flutter, Windows and more, at [magicglyphs.com](https://magicglyphs.com). Nothing in this plugin is locked or time-limited.
+
+= Source code =
+
+Everything in the plugin is readable as shipped. `magic-glyphs.all.js` is the Magic Glyphs runtime followed by the icon data on one line; the runtime's source and the tools that build the icon data are at [github.com/lewisjohnvillamor/magicglyphs](https://github.com/lewisjohnvillamor/magicglyphs) (`web/runtime.js`).
 
 == Installation ==
 
