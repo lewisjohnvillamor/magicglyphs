@@ -1,0 +1,17 @@
+{
+  "name": "@magicglyphs/magic-glyphs",
+  "version": "0.8.7",
+  "exports": {
+    ".": "./jsr/runtime.js",
+    "./all": "./jsr/all.js",
+    "./free-icons": "./jsr/free-icons.js",
+    "./sounds": "./jsr/sounds.js"
+  },
+  "publish": {
+    "include": [
+      "jsr/",
+      "README.md",
+      "LICENSE.md"
+    ]
+  }
+}
