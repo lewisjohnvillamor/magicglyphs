@@ -16,6 +16,8 @@ export interface GlyphSoundOptions {
   pan?: number;
   /** Milliseconds before the sound, or "auto" to line impact sounds up with the motion. */
   delay?: number | 'auto';
+  /** Your own audio file instead of a named sound: a URL or a data: URI. */
+  src?: string;
 }
 export interface MagicGlyphProps {
   name?: string;

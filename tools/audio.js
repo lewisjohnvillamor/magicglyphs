@@ -16,9 +16,21 @@ class Osc extends Node{constructor(c){super(c);this.frequency=new Param(440);thi
   start(t){this.t0=t||0}stop(t){this.t1=t}
   run(i){const sr=this.c.sampleRate,t=i/sr;if(t<this.t0||t>=this.t1)return 0;const p=this.ph;this.ph=(p+this.frequency.at(t)/sr)%1;
     switch(this.type){case 'square':return p<.5?1:-1;case 'sawtooth':return 2*p-1;case 'triangle':return p<.5?4*p-1:3-4*p;default:return Math.sin(2*Math.PI*p)}}}
-class Src extends Node{constructor(c){super(c);this.buffer=null;this.loop=false;this.t0=Infinity;this.t1=Infinity}start(t){this.t0=t||0}stop(t){this.t1=t}
+class Src extends Node{constructor(c){super(c);this.buffer=null;this.loop=false;this.playbackRate=new Param(1);this.t0=Infinity;this.t1=Infinity}start(t){this.t0=t||0}stop(t){this.t1=t}
   run(i){const sr=this.c.sampleRate,t=i/sr;if(!this.buffer||t<this.t0||t>=this.t1)return 0;const d=this.buffer.getChannelData(0),k=i-Math.round(this.t0*sr);
-    return this.loop?d[k%d.length]:k<d.length?d[k]:0}}
+    if(this.loop)return d[k%d.length];
+    // audio files: follow the playback rate and the file's own sample rate, reading between samples
+    const x=k*this.playbackRate.value*(this.buffer.sampleRate||sr)/sr,j=Math.floor(x),f=x-j;if(j+1>=d.length)return j<d.length?d[j]:0;return d[j]*(1-f)+d[j+1]*f}}
+// WAV files only (PCM 8/16/24/32-bit or 32-bit float), which is what the icon maker stores; other formats need a browser
+function decodeWav(ab){const v=new DataView(ab),tag=o=>String.fromCharCode(v.getUint8(o),v.getUint8(o+1),v.getUint8(o+2),v.getUint8(o+3));
+  if(ab.byteLength<12||tag(0)!=='RIFF'||tag(8)!=='WAVE')throw new Error('Only WAV sound files can be rendered outside a browser. Convert it to .wav.');
+  let o=12,fmt=null,data=null;while(o+8<=ab.byteLength){const id=tag(o),n=v.getUint32(o+4,true);if(id==='fmt ')fmt={type:v.getUint16(o+8,true),ch:v.getUint16(o+10,true),sr:v.getUint32(o+12,true),bits:v.getUint16(o+22,true)};
+    else if(id==='data')data={at:o+8,n:Math.min(n,ab.byteLength-o-8)};o+=8+n+(n&1)}
+  if(!fmt||!data)throw new Error('That WAV file has no sound in it.');const bps=fmt.bits/8,frames=Math.floor(data.n/(bps*fmt.ch)),out=Array.from({length:fmt.ch},()=>new Float32Array(frames));
+  for(let i=0;i<frames;i++)for(let c=0;c<fmt.ch;c++){const p=data.at+(i*fmt.ch+c)*bps;let x;
+    if(fmt.type===3&&bps===4)x=v.getFloat32(p,true);else if(bps===1)x=(v.getUint8(p)-128)/128;else if(bps===2)x=v.getInt16(p,true)/32768;
+    else if(bps===3){let y=v.getUint8(p)|v.getUint8(p+1)<<8|v.getUint8(p+2)<<16;if(y&0x800000)y|=~0xffffff;x=y/8388608}else if(bps===4)x=v.getInt32(p,true)/2147483648;else throw new Error('Unsupported WAV sample size.');out[c][i]=x}
+  return{sampleRate:fmt.sr,length:frames,numberOfChannels:fmt.ch,duration:frames/fmt.sr,getChannelData:k=>out[k]}}
 class Biquad extends Node{constructor(c){super(c);this.type='lowpass';this.frequency=new Param(350);this.Q=new Param(1);this.gain=new Param(0);this.x1=this.x2=this.y1=this.y2=0;this.k=null}
   coef(t){const sr=this.c.sampleRate,f=Math.min(this.frequency.at(t),sr/2-1),w=2*Math.PI*f/sr,cs=Math.cos(w),sn=Math.sin(w),Q=this.Q.at(t),G=this.gain.at(t);let b0,b1,b2,a0,a1,a2;
     if(this.type==='bandpass'){const al=sn/(2*Math.max(Q,1e-4));b0=al;b1=0;b2=-al;a0=1+al;a1=-2*cs;a2=1-al}
@@ -32,6 +44,7 @@ class Dest extends Node{}
 class OfflineContext{
   constructor(ch,len,sr){this.length=len;this.sampleRate=sr;this.currentTime=0;this.destination=new Dest(this)}
   createGain(){return new Gain(this)}createOscillator(){return new Osc(this)}createBufferSource(){return new Src(this)}createBiquadFilter(){return new Biquad(this)}createStereoPanner(){return new Pan(this)}
+  decodeAudioData(ab){try{return Promise.resolve(decodeWav(ab instanceof ArrayBuffer?ab:new Uint8Array(ab).buffer))}catch(e){return Promise.reject(e)}}
   createBuffer(ch,len,sr){const d=Array.from({length:ch},()=>new Float32Array(len));return{sampleRate:sr,length:len,numberOfChannels:ch,getChannelData:k=>d[k]}}
   startRendering(){const n=this.length,L=new Float32Array(n),R=new Float32Array(n);
     for(let i=0;i<n;i++){let l=0,r=0;for(const s of this.destination.ins){const v=s.pull(i);if(Array.isArray(v)){l+=v[0];r+=v[1]}else{l+=v;r+=v}}L[i]=l;R[i]=r}

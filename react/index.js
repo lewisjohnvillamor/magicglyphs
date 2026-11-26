@@ -13,7 +13,7 @@ function MagicGlyph(props){
   },[html,trigger,name]);
   const play=()=>player.current&&player.current.play();
   React.useImperativeHandle(props.playerRef,()=>({play}),[]);
-  const so={};if(soundOptions)for(const k of ['sound','volume','pitch','speed','tone','pan','delay'])if(soundOptions[k]!==undefined)so['sound-'+(k==='sound'?'name':k)]=String(soundOptions[k]);
+  const so={};if(soundOptions)for(const k of ['sound','volume','pitch','speed','tone','pan','delay','src'])if(soundOptions[k]!==undefined)so['sound-'+(k==='sound'?'name':k)]=String(soundOptions[k]);
   return React.createElement('span',{...so,ref,className,sound:sound?'':undefined,style:Object.assign({display:'inline-flex'},style),
     onMouseEnter:trigger==='hover'?play:undefined,onFocus:trigger==='hover'?play:undefined,onClick:trigger==='hover'||trigger==='click'?play:undefined,
     dangerouslySetInnerHTML:{__html:html}});

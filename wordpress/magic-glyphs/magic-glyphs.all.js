@@ -3,7 +3,7 @@
   'use strict';
   var REG={},uid=0;
   var STROKE='stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"';
-  function register(data){(data.icons||(Array.isArray(data)?data:[data])).forEach(function(ic){REG[ic.n]=ic}); // a set, a list, or one icon
+  function register(data){(data.icons||(Array.isArray(data)?data:[data])).forEach(function(ic){REG[ic.n]=ic;var cu=ic.S&&ic.S.custom;if(cu&&typeof cu.src==='string'&&typeof window!=='undefined')setTimeout(function(){var d=cleanDef(cu);if(d&&d.src)load(d.src).catch(function(){})},0)}); // a set, a list, or one icon
     // elements already on the page were upgraded before their data arrived: draw them now
     if(typeof document!=='undefined')Array.prototype.forEach.call(document.querySelectorAll('magic-glyph'),function(e){if(e._render)e._render()});
     return api}
@@ -82,11 +82,11 @@
   function hook(){if(hooked||typeof document==='undefined')return;hooked=true;var un=function(){unlocked=true;ensureAudio()};
     document.addEventListener('pointerdown',un,true);document.addEventListener('keydown',un,true)}
   // tone and noise read the context, pitch, speed and start time of the sound being rendered from cur
-  function tone(out,f,t,dur,g,type,f2){var C=cur.C,o=C.createOscillator(),a=C.createGain(),at=cur.t0+t/cur.sp,du=dur/cur.sp,pm=cur.pm;
+  function tone(out,f,t,dur,g,type,f2){if(cur.rec){cur.rec.push(['t',f,t,dur,g,type||'sine'].concat(f2?[f2]:[]));return}var C=cur.C,o=C.createOscillator(),a=C.createGain(),at=cur.t0+t/cur.sp,du=dur/cur.sp,pm=cur.pm;
     o.type=type||'sine';o.frequency.setValueAtTime(f*pm,at);if(f2)o.frequency.exponentialRampToValueAtTime(f2*pm,at+du);
     a.gain.setValueAtTime(.0001,at);a.gain.exponentialRampToValueAtTime(g,at+Math.min(.006,du/3));a.gain.exponentialRampToValueAtTime(.0001,at+du);
     o.connect(a);a.connect(out);o.start(at);o.stop(at+du+.05)}
-  function noise(out,f,f2,t,dur,g,q){var C=cur.C,s=C.createBufferSource(),b=C.createBiquadFilter(),a=C.createGain(),at=cur.t0+t/cur.sp,du=dur/cur.sp,pm=cur.pm;
+  function noise(out,f,f2,t,dur,g,q){if(cur.rec){cur.rec.push(['n',f,f2,t,dur,g,q||1.2]);return}var C=cur.C,s=C.createBufferSource(),b=C.createBiquadFilter(),a=C.createGain(),at=cur.t0+t/cur.sp,du=dur/cur.sp,pm=cur.pm;
     s.buffer=noiseFor(C);s.loop=true;b.type='bandpass';b.Q.value=q||1.2;b.frequency.setValueAtTime(Math.min(f*pm,18000),at);b.frequency.exponentialRampToValueAtTime(Math.min(f2*pm,18000),at+du);
     a.gain.setValueAtTime(.0001,at);a.gain.exponentialRampToValueAtTime(g,at+du*.3);a.gain.exponentialRampToValueAtTime(.0001,at+du);
     s.connect(b);b.connect(a);a.connect(out);s.start(at);s.stop(at+du+.05)}
@@ -129,17 +129,116 @@
   buzz:o=>{tone(o,95,0,.12,.3,'sawtooth');tone(o,95,.17,.12,.3,'sawtooth')},
   coin:o=>{tone(o,1568,0,.08,.2,'square');tone(o,2093,.07,.35,.2,'square')},
   scribble:o=>{noise(o,2200,3200,0,.09,.3,4);noise(o,2800,2000,.1,.09,.3,4);noise(o,2200,3400,.2,.1,.3,4)},
-  ticktock:o=>{tone(o,1900,0,.025,.22,'square');tone(o,1300,.3,.025,.2,'square');tone(o,1900,.6,.025,.16,'square')}
+  ticktock:o=>{tone(o,1900,0,.025,.22,'square');tone(o,1300,.3,.025,.2,'square');tone(o,1900,.6,.025,.16,'square')},
+  // ---- added in 0.8.5 ----
+  boop:o=>tone(o,520,0,.12,.35,'sine',260),
+  blip:o=>tone(o,1250,0,.05,.16,'square'),
+  hover:o=>tone(o,2200,0,.035,.08,'sine',2000),
+  switchon:o=>{noise(o,3000,1500,0,.02,.4,2);tone(o,700,.01,.07,.25,'sine',1050)},
+  switchoff:o=>{noise(o,2500,1200,0,.02,.4,2);tone(o,950,.01,.07,.25,'sine',620)},
+  typing:o=>{[0,.09,.15,.27,.33,.46].forEach((t,i)=>noise(o,2600+i%3*500,1800,t,.03,.4,3))},
+  flip:o=>{noise(o,1500,4000,0,.09,.4,1.2);noise(o,1800,4500,.1,.09,.3,1.2)},
+  plink:o=>{tone(o,2093,0,.35,.25,'triangle');tone(o,4186,0,.12,.06)},
+  pluck:o=>{tone(o,330,0,.4,.16,'sawtooth',326);tone(o,660,0,.18,.12,'triangle')},
+  marimba:o=>{tone(o,523,0,.45,.35);tone(o,2093,0,.08,.12)},
+  harp:o=>{[523,659,784,1047,1319].forEach((f,i)=>tone(o,f,i*.06,.5,.18,'triangle'))},
+  bell:o=>{tone(o,880,0,1.6,.25);tone(o,2429,0,.9,.1);tone(o,4752,0,.5,.05)},
+  gong:o=>{tone(o,98,0,2.2,.4);tone(o,147,.01,1.8,.2);tone(o,233,.02,1.4,.12);noise(o,400,200,0,.6,.08,1)},
+  magic:o=>{tone(o,523,0,.6,.1,'triangle',1047);[1568,2093,2637,3136].forEach((f,i)=>tone(o,f,.1+i*.07,.4,.08))},
+  sparkle:o=>{[2637,3136,2349,3520,2794,3951].forEach((f,i)=>tone(o,f,i*.05,.25,.09))},
+  ping:o=>{tone(o,1760,0,.8,.25);tone(o,3520,0,.3,.06)},
+  pong:o=>{tone(o,880,0,.25,.35);tone(o,1760,0,.08,.08)},
+  incoming:o=>{tone(o,1175,0,.18,.22);tone(o,1568,.12,.35,.22)},
+  bikebell:o=>{for(let i=0;i<2;i++){tone(o,2100,i*.16,.5,.14);tone(o,2700,i*.16,.4,.08)}},
+  trill:o=>{for(let i=0;i<10;i++)tone(o,i%2?1600:1300,i*.045,.045,.14,'triangle')},
+  alarm:o=>{for(let i=0;i<4;i++)tone(o,1050,i*.15,.09,.15,'square')},
+  countdown:o=>{tone(o,880,0,.08,.2);tone(o,880,.3,.08,.2);tone(o,1760,.6,.3,.22)},
+  tada:o=>{tone(o,523,0,.1,.2,'triangle');tone(o,659,.08,.1,.2,'triangle');[1047,1319,1568].forEach(f=>tone(o,f,.18,.7,.14,'triangle'))},
+  error:o=>{tone(o,196,0,.14,.2,'square');tone(o,185,.17,.22,.2,'square')},
+  warning:o=>{[0,1,2].forEach(i=>{tone(o,880,i*.22,.1,.16,'triangle');tone(o,660,i*.22+.11,.1,.16,'triangle')})},
+  fail:o=>{tone(o,494,0,.16,.22,'triangle');tone(o,392,.17,.16,.22,'triangle');tone(o,311,.34,.4,.22,'triangle',290)},
+  cancel:o=>{tone(o,660,0,.1,.22,'triangle');tone(o,440,.1,.18,.22,'triangle')},
+  unlock:o=>{noise(o,3200,1800,0,.03,.4,3);noise(o,2600,1400,.09,.04,.4,3);tone(o,1568,.16,.35,.16);tone(o,2093,.22,.45,.14)},
+  lock:o=>{noise(o,2400,1200,0,.04,.45,3);tone(o,220,0,.12,.35,'triangle',140)},
+  rise:o=>{tone(o,330,0,.5,.15,'triangle',660);tone(o,495,0,.5,.08,'sine',990)},
+  fall:o=>{tone(o,900,0,.45,.18,'triangle',300);tone(o,1350,0,.3,.06,'sine',450)},
+  swoop:o=>{tone(o,350,0,.22,.25,'sine',1500);noise(o,800,3500,0,.22,.2,1)},
+  whip:o=>{noise(o,1500,8000,0,.1,.5,1.5);noise(o,6000,3000,.1,.04,.4,2)},
+  zipper:o=>{for(let i=0;i<10;i++)noise(o,2000+i*350,2500+i*350,i*.025,.018,.7,6)},
+  boing:o=>{tone(o,140,0,.09,.35,'sine',420);tone(o,420,.09,.1,.3,'sine',230);tone(o,230,.19,.1,.25,'sine',340);tone(o,340,.29,.14,.18,'sine',260)},
+  wobble:o=>{for(let i=0;i<4;i++)tone(o,i%2?480:300,i*.09,.09,.2,'triangle',i%2?300:480)},
+  squeak:o=>{tone(o,1700,0,.08,.14,'sine',2600);tone(o,2500,.09,.1,.12,'sine',1700)},
+  gulp:o=>{tone(o,180,0,.08,.4,'sine',420);tone(o,420,.09,.07,.3,'sine',160)},
+  drip:o=>{tone(o,1400,0,.06,.35,'sine',500);tone(o,900,.07,.05,.12,'sine',1500)},
+  splash:o=>{noise(o,2200,400,0,.45,.5,.8);tone(o,500,.05,.08,.15,'sine',1100);tone(o,700,.15,.07,.12,'sine',1300)},
+  rain:o=>{[0,.07,.11,.2,.26,.31,.4,.47,.55,.6,.68].forEach((t,i)=>noise(o,4000+(i*1300)%4000,3000,t,.025,.6,5))},
+  thunder:o=>{noise(o,600,80,0,1.4,.6,.5);noise(o,300,60,.15,1.2,.5,.5);tone(o,45,0,1.2,.3,'sine',30)},
+  rumble:o=>{tone(o,55,0,.9,.3,'sawtooth',45);noise(o,180,90,0,.9,.35,.6)},
+  crackle:o=>{[0,.05,.13,.16,.28,.34,.45,.52].forEach((t,i)=>noise(o,1500+(i*900)%3000,800,t,.02,.4+(i%3)*.1,4))},
+  crumple:o=>{[0,.04,.09,.12,.19,.25,.28].forEach((t,i)=>noise(o,1200+(i*700)%2600,2000,t,.05,.35,2))},
+  clap:o=>{[0,.012,.024].forEach(t=>noise(o,1400,1100,t,.05,.45,1.5));noise(o,1300,900,.035,.18,.25,1)},
+  heartbeat:o=>{tone(o,90,0,.12,.6,'sine',45);tone(o,80,.17,.14,.45,'sine',40)},
+  woodblock:o=>{tone(o,820,0,.07,.5,'sine',760);tone(o,1650,0,.03,.15,'triangle')},
+  clang:o=>{tone(o,523,0,.9,.18,'triangle');tone(o,1347,0,.6,.12);tone(o,2273,0,.4,.08);noise(o,3000,1500,0,.05,.3,2)},
+  kick:o=>{tone(o,150,0,.3,.8,'sine',42);noise(o,2000,600,0,.02,.2,1)},
+  snare:o=>{noise(o,2200,1600,0,.18,.5,.7);tone(o,200,0,.1,.35,'triangle',160)},
+  hihat:o=>{noise(o,9000,8000,0,.05,.4,1);noise(o,9000,8000,.15,.05,.3,1)},
+  boom:o=>{tone(o,90,0,.8,.7,'sine',28);noise(o,700,80,0,.9,.6,.6)},
+  kaching:o=>{noise(o,2500,1200,0,.06,.4,3);tone(o,2637,.06,.6,.16,'triangle');tone(o,3520,.12,.8,.14)},
+  levelup:o=>{[523,659,784,1047].forEach((f,i)=>tone(o,f,i*.07,i<3?.08:.3,.16,'square'))},
+  powerup:o=>{tone(o,220,0,.45,.14,'square',1320);tone(o,330,0,.45,.08,'triangle',1980)},
+  powerdown:o=>{tone(o,1100,0,.5,.14,'square',140);tone(o,550,0,.5,.08,'triangle',70)},
+  jump:o=>tone(o,280,0,.16,.2,'square',760),
+  laser:o=>{tone(o,2400,0,.18,.18,'sawtooth',180);tone(o,1800,.02,.16,.1,'square',140)},
+  robot:o=>{[330,494,262,415].forEach((f,i)=>tone(o,f,i*.08,.07,.13,'square'))},
+  engine:o=>{for(let i=0;i<12;i++)tone(o,70+i*6,i*.05,.045,.35,'sawtooth',60+i*6)}
+  };
+  // families, for pickers and docs; every sound is in exactly one
+  var GROUPS={
+    interface:['tap','click','blink','hover','blip','boop','switchon','switchoff','tick2','ticktock','typing','flip','scribble','shutter'],
+    alerts:['ding','chime','ping','pong','beep','incoming','alert','success','error','warning','fail','cancel','alarm','countdown','bell','bikebell','trill','tada'],
+    motion:['whoosh','swish','swoop','breeze','rise','fall','whip','zipper','wobble','boing','bounce','drop','liftoff'],
+    impacts:['thump','knock','clank','clang','woodblock','kick','snare','hihat','clap','heartbeat','boom','crunch','crumple'],
+    nature:['bubble','drip','splash','rain','thunder','rumble','sizzle','fizz','crackle','chirp','whistle','gulp','squeak'],
+    musical:['plink','pluck','marimba','harp','gong','notes','glow','soft','sparkle','magic'],
+    game:['coin','kaching','levelup','powerup','powerdown','jump','laser','zap','pop','pops','robot'],
+    machines:['horn','siren','rotor','engine','ratchet','buzz','lock','unlock']
   };
   // loudness trims measured offline so every sound plays at about the same level and none clips (see tools/sound-audit.js)
-  var NORM={"bounce":0.56,"siren":1.71,"bubble":0.87,"crunch":2.43,"sizzle":2.5,"fizz":2.06,"horn":0.92,"rotor":0.95,"chirp":1,"whistle":0.83,"ding":0.63,"thump":0.51,"liftoff":1.36,"whoosh":1.83,"swish":1.84,"breeze":2.5,"chime":0.73,"glow":1.16,"soft":1.1,"tick2":0.84,"blink":1.84,"ratchet":1.17,"clank":0.98,"click":0.62,"pop":0.6,"pops":0.78,"drop":0.73,"zap":1.07,"notes":0.92,"shutter":1.36,"knock":0.53,"success":1.02,"tap":0.95,"beep":1.08,"alert":1.1,"buzz":1.23,"coin":0.71,"scribble":2.5,"ticktock":0.9};
+  var NORM={"bounce":0.55,"siren":1.67,"bubble":0.85,"crunch":2.48,"sizzle":2.44,"fizz":2.04,"horn":0.9,"rotor":0.93,"chirp":0.98,"whistle":0.82,"ding":0.62,"thump":0.5,"liftoff":1.34,"whoosh":1.76,"swish":1.73,"breeze":2.5,"chime":0.71,"glow":1.14,"soft":1.08,"tick2":0.83,"blink":1.8,"ratchet":1.15,"clank":0.96,"click":0.63,"pop":0.58,"pops":0.76,"drop":0.71,"zap":1.04,"notes":0.9,"shutter":1.42,"knock":0.51,"success":1,"tap":0.93,"beep":1.05,"alert":1.07,"buzz":1.2,"coin":0.7,"scribble":2.5,"ticktock":0.88,"boop":0.68,"blip":1,"hover":1.88,"switchon":0.97,"switchoff":0.97,"typing":2.19,"flip":1.46,"plink":0.77,"pluck":1.74,"marimba":0.64,"harp":0.84,"bell":0.76,"gong":0.56,"magic":1.29,"sparkle":1.04,"ping":0.68,"pong":0.63,"incoming":0.85,"bikebell":0.88,"trill":1.74,"alarm":1.05,"countdown":0.85,"tada":1,"error":0.93,"warning":1.54,"fail":1.19,"cancel":1.17,"unlock":0.97,"lock":0.77,"rise":1.4,"fall":1.27,"swoop":0.9,"whip":1.15,"zipper":1.88,"boing":0.88,"wobble":1.37,"squeak":1.27,"gulp":0.69,"drip":0.82,"splash":1.11,"rain":1.3,"thunder":1.12,"rumble":1.2,"crackle":2.37,"crumple":1.85,"clap":1.96,"heartbeat":0.6,"woodblock":0.45,"clang":0.99,"kick":0.35,"snare":0.76,"hihat":0.9,"boom":0.43,"kaching":0.85,"levelup":1.03,"powerup":1.14,"powerdown":1.06,"jump":0.9,"laser":1.01,"robot":1.34,"engine":1.31};
   var num=function(v,d,lo,hi){v=parseFloat(v);return isFinite(v)?Math.max(lo,Math.min(hi,v)):d};
+  // ---- custom sounds: a designed synth (a list of steps) or an audio file, attached to an icon (S.custom) or named with sound.define ----
+  // a step is ['t', hz, start s, length s, level 0-1, wave, end hz?] for a tone or ['n', hz, end hz, start s, length s, level 0-1, q?] for filtered noise
+  var WAVES={sine:1,triangle:1,square:1,sawtooth:1},DEFS={},BUFS={},LOADING={};
+  var fin=function(v,lo,hi){return typeof v==='number'&&isFinite(v)&&v>=lo&&v<=hi};
+  function cleanSteps(a){if(!Array.isArray(a)||!a.length||a.length>48)return null;var out=[];
+    for(var i=0;i<a.length;i++){var x=a[i];if(!Array.isArray(x))return null;
+      if(x[0]==='t'&&fin(x[1],20,20000)&&fin(x[2],0,2.5)&&fin(x[3],.005,2.5)&&fin(x[4],.001,1)&&WAVES[x[5]||'sine']&&(x[6]===undefined||x[6]===null||fin(x[6],20,20000)))out.push(['t',x[1],x[2],x[3],x[4],x[5]||'sine'].concat(x[6]?[x[6]]:[]));
+      else if(x[0]==='n'&&fin(x[1],20,20000)&&fin(x[2],20,20000)&&fin(x[3],0,2.5)&&fin(x[4],.005,2.5)&&fin(x[5],.001,1)&&(x[6]===undefined||fin(x[6],.1,30)))out.push(['n',x[1],x[2],x[3],x[4],x[5],x[6]||1.2]);
+      else return null}return out}
+  // audio may be a data: URI (what the icon maker stores) or a URL your page can fetch
+  function cleanDef(d){if(!d||typeof d!=='object')return null;if(d.synth){var st=cleanSteps(d.synth);return st?{synth:st}:null}
+    if(typeof d.src==='string'&&d.src.length<=1500000&&(/^data:audio\/[a-z0-9.+-]+;base64,[A-Za-z0-9+/=]+$/.test(d.src)||/^(https?:)?\/\/|^\.{0,2}\//.test(d.src)))return{src:d.src};return null}
+  function bytes(src){if(src.slice(0,5)==='data:'){var b=atob(src.slice(src.indexOf(',')+1)),u=new Uint8Array(b.length);for(var i=0;i<b.length;i++)u[i]=b.charCodeAt(i);return Promise.resolve(u.buffer)}
+    return fetch(src).then(function(r){if(!r.ok)throw new Error('Could not load the sound '+src+' ('+r.status+').');return r.arrayBuffer()})}
+  // decode once and keep it; level it so a quiet or loud recording plays at about the same level as the built-in sounds
+  function load(src,c){if(BUFS[src])return Promise.resolve(BUFS[src]);if(LOADING[src])return LOADING[src];
+    var dc=c||(typeof window!=='undefined'&&(window.OfflineAudioContext||window.webkitOfflineAudioContext)?new (window.OfflineAudioContext||window.webkitOfflineAudioContext)(1,1,44100):ensureAudio());
+    if(!dc)return Promise.reject(new Error('Audio is not available here.'));
+    return LOADING[src]=bytes(src).then(function(ab){return new Promise(function(ok,no){var pr=dc.decodeAudioData(ab,ok,no);if(pr&&pr.then)pr.then(ok,no)})}).then(function(buf){
+      var pk=0;for(var ch=0;ch<buf.numberOfChannels;ch++){var d=buf.getChannelData(ch);for(var i=0;i<d.length;i+=2){var a=d[i]<0?-d[i]:d[i];if(a>pk)pk=a}}
+      delete LOADING[src];return BUFS[src]={buf:buf,gain:pk>1e-4?Math.min(6,.45/pk):1}},function(e){delete LOADING[src];throw e})}
+  function sample(out,b){var C=cur.C,s=C.createBufferSource(),a=C.createGain();s.buffer=b.buf;if(s.playbackRate)s.playbackRate.value=cur.pm*cur.sp;a.gain.value=b.gain;s.connect(a);a.connect(out);s.start(cur.t0)}
+  // the definition behind a sound name, if it is not built in
+  function defOf(o){return o.sound==='custom'?o.custom:DEFS[o.sound]}
+  function synthFn(st){return function(o){st.forEach(function(x){x[0]==='t'?tone(o,x[1],x[2],x[3],x[4],x[5],x[6]):noise(o,x[1],x[2],x[3],x[4],x[5],x[6])})}}
   // settings for one play: defaults < sound.set(icon) < the icon's own data (ic.S) < attributes on the element
   function settings(ic,el,extra){var o={},k;for(k in DEF)o[k]=DEF[k];
     var add=function(x){if(x)for(var k in x)if(x[k]!==undefined&&x[k]!==null&&x[k]!=='')o[k]=x[k]};
     if(ic){add(PER[ic.n]);add(ic.S)}
-    if(el&&el.getAttribute)add({sound:el.getAttribute('sound-name'),volume:el.getAttribute('sound-volume'),pitch:el.getAttribute('sound-pitch'),speed:el.getAttribute('sound-speed'),tone:el.getAttribute('sound-tone'),pan:el.getAttribute('sound-pan'),delay:el.getAttribute('sound-delay')});
+    if(el&&el.getAttribute)add({sound:el.getAttribute('sound-name'),volume:el.getAttribute('sound-volume'),pitch:el.getAttribute('sound-pitch'),speed:el.getAttribute('sound-speed'),tone:el.getAttribute('sound-tone'),pan:el.getAttribute('sound-pan'),delay:el.getAttribute('sound-delay'),src:el.getAttribute('sound-src')});
     add(extra);o.sound=o.sound||(ic&&ic.s)||null;
+    if(o.src){o.custom=cleanDef({src:o.src});o.sound='custom';delete o.src}else if(o.custom)o.custom=cleanDef(o.custom);
     o.volume=num(o.volume,1,0,2);o.pitch=num(o.pitch,0,-12,12);o.speed=num(o.speed,1,.5,2);o.tone=num(o.tone,0,-1,1);o.pan=num(o.pan,1,0,1);
     o.delay=o.delay==='auto'?(ic?beat(ic,o.sound):0):num(o.delay,0,0,2000);return o}
   // impact sounds wait for the moment of impact. The animations mark it: a reaction (a squash, a tray dipping, a lid jumping)
@@ -149,8 +248,8 @@
     ic.A.forEach(function(a){var t=a.k&&a.k[0]&&a.k[0][0];if(t>40&&t<600&&(!hit||t<hit))hit=t});
     return ic._beat=hit}
   // build the sound graph into any audio context: volume and tone, then position
-  function render(c,dest,o,pan){var fn=SOUNDS[o.sound];if(!fn)return false;
-    var g=c.createGain();g.gain.value=(NORM[o.sound]||1)*o.volume;var node=g;
+  function render(c,dest,o,pan){var def=defOf(o),fn=def?(def.synth?synthFn(def.synth):def.src&&BUFS[def.src]?function(g){sample(g,BUFS[def.src])}:null):SOUNDS[o.sound];if(!fn)return false;
+    var g=c.createGain();g.gain.value=(def?1:NORM[o.sound]||1)*o.volume;var node=g;
     if(o.tone<0){var lp=c.createBiquadFilter();lp.type='lowpass';lp.frequency.value=20000*Math.pow(2,o.tone*5);lp.Q.value=.5;g.connect(lp);node=lp}
     else if(o.tone>0){var hs=c.createBiquadFilter();hs.type='highshelf';hs.frequency.value=2500;hs.gain.value=o.tone*9;g.connect(hs);node=hs}
     if(c.createStereoPanner&&pan){var p=c.createStereoPanner();p.pan.setValueAtTime(Math.max(-1,Math.min(1,pan)),c.currentTime);node.connect(p);p.connect(dest)}else node.connect(dest);
@@ -158,6 +257,7 @@
   // sound="off" on an element always wins, so decorative or autoplaying icons stay silent even when sound is on for the page
   function wantsSound(el){if(el&&el.getAttribute&&el.getAttribute('sound')==='off')return false;return soundAll||!!(el&&el.hasAttribute&&el.hasAttribute('sound'))}
   function playFor(ic,el,extra){if(muted||!unlocked||!ensureAudio())return false;var o=settings(ic,el,extra);if(!o.sound||!o.volume)return false;
+    var def=defOf(o);if(def&&def.src&&!BUFS[def.src]){var asked=Date.now();load(def.src).then(function(){if(Date.now()-asked<700)playFor(ic,el,extra)},function(e){if(typeof console!=='undefined')console.warn('magic-glyphs: '+e.message)});return true}
     var pan=0;if(o.pan&&el&&el.getBoundingClientRect&&typeof innerWidth==='number'&&innerWidth>0){var r=el.getBoundingClientRect();pan=((r.left+r.width/2)/innerWidth*2-1)*.85*o.pan}
     try{return render(ctx,master,o,pan)}catch(e){return false}}
   function playSound(name,el,extra){var x={sound:name};if(extra)for(var k in extra)x[k]=extra[k];return playFor(null,el,x)}
@@ -182,7 +282,8 @@
     // render to an AudioBuffer offline (no click needed), for previews, tests and exporting audio
     render:function(name,opts,Offline){var OAC=Offline||typeof window!=='undefined'&&(window.OfflineAudioContext||window.webkitOfflineAudioContext);if(!OAC)return Promise.reject(new Error('Offline audio is not available here.'));
       var o=REG[name]?settings(REG[name],null,opts):settings(null,null,Object.assign({sound:name},opts||{}));var c=new OAC(2,Math.ceil(44100*(2.6+o.delay/1000)),44100);
-      if(!render(c,c.destination,o,(opts&&opts.panTo)||0))return Promise.reject(new Error('No sound named "'+o.sound+'".'));return c.startRendering()},
+      var def=defOf(o);return (def&&def.src?load(def.src,c):Promise.resolve()).then(function(){
+        if(!render(c,c.destination,o,(opts&&opts.panTo)||0))throw new Error(o.sound==='custom'?'This icon\'s own sound is missing or not valid.':'No sound named "'+o.sound+'".');return c.startRendering()})},
     // encode a rendered buffer as a 16-bit stereo WAV file (ArrayBuffer), trimming the silence at the end
     wav:function(buf){var L=buf.getChannelData(0),R=buf.numberOfChannels>1?buf.getChannelData(1):L,n=L.length;
       while(n>1&&Math.abs(L[n-1])<1e-4&&Math.abs(R[n-1])<1e-4)n--;n=Math.min(L.length,n+Math.round(buf.sampleRate*.02));
@@ -190,7 +291,19 @@
       w(0,'RIFF');v.setUint32(4,36+n*4,true);w(8,'WAVE');w(12,'fmt ');v.setUint32(16,16,true);v.setUint16(20,1,true);v.setUint16(22,2,true);
       v.setUint32(24,buf.sampleRate,true);v.setUint32(28,buf.sampleRate*4,true);v.setUint16(32,4,true);v.setUint16(34,16,true);w(36,'data');v.setUint32(40,n*4,true);
       for(var i=0,o=44;i<n;i++,o+=4){v.setInt16(o,Math.max(-1,Math.min(1,L[i]))*32767,true);v.setInt16(o+2,Math.max(-1,Math.min(1,R[i]))*32767,true)}return ab},
-    names:function(){return Object.keys(SOUNDS)},unlocked:function(){return unlocked}};
+    names:function(){return Object.keys(SOUNDS).concat(Object.keys(DEFS))},
+    // the built-in sounds by family: {interface:[...], alerts:[...], ...}
+    groups:function(){var g={};for(var k in GROUPS)g[k]=GROUPS[k].slice();var mine=Object.keys(DEFS);if(mine.length)g.yours=mine;return g},
+    // your own sound under a name: sound.define('pling', {src:'/sounds/pling.mp3'}) or {synth:[['t',880,0,.2,.3,'sine']]}; null removes it
+    define:function(name,d){if(!/^[a-z0-9-]{1,40}$/.test(name)||SOUNDS[name])throw new Error('Pick a sound name of lowercase letters, digits and dashes that is not built in.');
+      if(d===null){delete DEFS[name];return api}var c=cleanDef(d);if(!c)throw new Error('A sound needs {src: a URL or data: URI} or {synth: a list of steps}.');DEFS[name]=c;return api},
+    // start loading an audio file ahead of the first play
+    preload:function(src){return load(src).then(function(){})},
+    // the steps a built-in sound is made of, to start a design from: [['t',hz,start,len,level,wave,endHz], ['n',hz,endHz,start,len,level,q]]
+    steps:function(name){var d=DEFS[name];if(d&&d.synth)return JSON.parse(JSON.stringify(d.synth));var fn=SOUNDS[name];if(!fn)return null;var rec=[],was=cur;cur={rec:rec};try{fn(null)}finally{cur=was}
+      return rec.map(function(x){return x.map(function(v){return typeof v==='number'?+v.toFixed(4):v})})},
+    // check a custom sound definition: the cleaned copy, or null
+    check:cleanDef,unlocked:function(){return unlocked}};
   var api={sound:soundApi,register:register,svg:svg,attach:attach,state:state,origins:origins,transform:transform,has:function(n){return !!REG[n]},names:function(){return Object.keys(REG)},icon:function(n){return REG[n]}};
   // <magic-glyph name="heart" variant="duotone" trigger="hover" size="32" label="Like"></magic-glyph>
   if(typeof customElements!=='undefined'&&typeof HTMLElement!=='undefined'&&!customElements.get('magic-glyph')){

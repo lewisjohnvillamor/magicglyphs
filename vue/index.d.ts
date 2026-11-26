@@ -10,8 +10,8 @@ export interface MagicGlyphProps {
   label?: string;
   /** Play the icon's sound with its animation. */
   sound?: boolean;
-  /** Shape the sound: { sound, volume, pitch, speed, tone, pan, delay }. */
-  soundOptions?: { sound?: string; volume?: number; pitch?: number; speed?: number; tone?: number; pan?: number; delay?: number | 'auto' };
+  /** Shape the sound: { sound, volume, pitch, speed, tone, pan, delay, src }. */
+  soundOptions?: { sound?: string; volume?: number; pitch?: number; speed?: number; tone?: number; pan?: number; delay?: number | 'auto'; src?: string };
 }
 export const MagicGlyph: DefineComponent<MagicGlyphProps>;
 export function register(icons: unknown): void;

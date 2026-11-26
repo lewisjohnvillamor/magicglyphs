@@ -82,7 +82,9 @@ function checkIcon(ic,src){const bad=m=>{throw new Error(src+': '+m)};
     if(a.o!==undefined&&!(Array.isArray(a.o)&&a.o.length===2&&a.o.every(Number.isFinite)))bad('"'+ic.n+'" has a malformed motion origin');if(a.from!==undefined&&!Number.isFinite(a.from))bad('"'+ic.n+'" has a malformed motion start')}
   const out={n:ic.n,c:typeof ic.c==='string'&&NAME_OK.test(ic.c)?ic.c:'custom',t:typeof ic.t==='string'?ic.t.replace(/[<>"&]/g,'').slice(0,200):'',L:ic.L,A:ic.A||[]};
   if(typeof ic.s==='string'&&/^[a-z0-9]{1,20}$/.test(ic.s))out.s=ic.s;
-  if(ic.S&&typeof ic.S==='object'){const S={};for(const k of ['sound','volume','pitch','speed','tone','pan','delay']){const v=ic.S[k];if(typeof v==='number'&&isFinite(v))S[k]=v;else if(k==='sound'&&typeof v==='string'&&/^[a-z0-9]{1,20}$/.test(v))S[k]=v;else if(k==='delay'&&v==='auto')S[k]=v}if(Object.keys(S).length)out.S=S}
+  if(ic.S&&typeof ic.S==='object'){const S={};for(const k of ['sound','volume','pitch','speed','tone','pan','delay']){const v=ic.S[k];if(typeof v==='number'&&isFinite(v))S[k]=v;else if(k==='sound'&&typeof v==='string'&&/^[a-z0-9]{1,20}$/.test(v))S[k]=v;else if(k==='delay'&&v==='auto')S[k]=v}
+    // the icon's own sound: a designed synth or an audio file (checked the same way the runtime checks it)
+    if(ic.S.custom!==undefined){const c=MG.sound.check(ic.S.custom);if(!c)bad('"'+ic.n+'" has a custom sound that is not valid');S.custom=c}if(Object.keys(S).length)out.S=S}
   return out}
 function addCustom(where){const files=[];
   for(const w of [].concat(where).filter(Boolean)){const p=path.resolve(w);if(!fs.existsSync(p))throw new Error('No such file or folder: '+w);

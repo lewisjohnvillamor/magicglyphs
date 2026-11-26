@@ -118,7 +118,8 @@ Every icon has a short synthesized sound matched to its motion, panned left or r
 
 | Setting | Range |
 |---|---|
-| `sound-name` | any of the 39 sounds |
+| `sound-name` | any of the 100 sounds |
+| `sound-src` | your own audio file: a URL or `data:` URI |
 | `sound-volume` | 0 to 2 |
 | `sound-pitch` | -12 to 12 semitones |
 | `sound-speed` | 0.5 to 2 |

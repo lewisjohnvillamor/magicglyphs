@@ -13,7 +13,7 @@ const MagicGlyph=defineComponent({name:'MagicGlyph',
     onBeforeUnmount(()=>{if(io)io.disconnect()});
     watch(html,()=>Promise.resolve().then(bind));
     expose({play});
-    return()=>{const so={};if(props.soundOptions)for(const k of ['sound','volume','pitch','speed','tone','pan','delay'])if(props.soundOptions[k]!==undefined)so['sound-'+(k==='sound'?'name':k)]=String(props.soundOptions[k]);return h('span',{...so,ref:el,sound:props.sound?'':undefined,style:{display:'inline-flex'},innerHTML:html.value,
+    return()=>{const so={};if(props.soundOptions)for(const k of ['sound','volume','pitch','speed','tone','pan','delay','src'])if(props.soundOptions[k]!==undefined)so['sound-'+(k==='sound'?'name':k)]=String(props.soundOptions[k]);return h('span',{...so,ref:el,sound:props.sound?'':undefined,style:{display:'inline-flex'},innerHTML:html.value,
       onMouseenter:props.trigger==='hover'?play:undefined,onFocusin:props.trigger==='hover'?play:undefined,onClick:props.trigger==='hover'||props.trigger==='click'?play:undefined})};
   }});
 // A speaker button visitors use to turn icon sounds on or off; their choice is remembered in the browser.
