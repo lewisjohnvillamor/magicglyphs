@@ -5,6 +5,8 @@
 - Every type and function in the TypeScript definitions is documented, and each JSR entry point has its own module docs and example.
 - JSR releases are published from GitHub Actions, with provenance.
 - Flutter package `magic_glyphs` for pub.dev.
+- NuGet package `MagicGlyphs.Avalonia`: a `MagicGlyph` control for Avalonia 11 and 12 with the free icons, their motion and sounds.
+- Godot 4 add-on (magicglyphs-godot): a `MagicGlyph` node with the free icons, their motion and sounds, for Godot 4.3 and later.
 
 ## 0.8.8
 
