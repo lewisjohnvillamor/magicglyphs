@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.8.7
+
+- WordPress plugin: a Magic Glyph block with live preview, colour, size, trigger and sound settings; shortcode options for a sound and a colour; licensed GPLv2 or later, ready for the WordPress.org directory.
+- README: platform badges.
+
 ## 0.8.6
 
 - An optional pack of 428 more sounds (528 in all), in ten families including sci-fi and cartoon: `import pack from 'magic-glyphs/sounds'` then `MagicGlyphs.sound.add(pack)`, or `web/sounds-more.js`. It is a separate 19 KB file, so pages that do not use it stay small. Icons carry the steps of a pack sound they use, so they play it without the pack.

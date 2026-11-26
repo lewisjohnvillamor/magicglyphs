@@ -35,6 +35,10 @@ For both Free and Paid Icons, you may not:
 - use the icons in a logo or trademark;
 - remove this notice from copies of the package.
 
+## 4a. The WordPress plugin
+
+The WordPress plugin in the `wordpress` folder, including the Free Icons it contains, is also available under the GNU General Public License, version 2 or any later version, as its own LICENSE.txt says. That permission covers only what is in the plugin. It does not cover the Paid Icons.
+
 ## 5. Flags
 
 Flag icons are simplified drawings of flags. Flags themselves are not owned by the author, and some countries regulate how their flag may be used. You are responsible for your own use.
