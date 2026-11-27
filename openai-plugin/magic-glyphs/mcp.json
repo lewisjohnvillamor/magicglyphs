@@ -3,7 +3,15 @@
   "mcpServers": {
     "magic-glyphs": {
       "type": "streamable-http",
-      "url": "https://magicglyphs.com/mcp"
+      "url": "https://magicglyphs.com/mcp",
+      "headers": {},
+      "extensions": {
+        "com.openai": {
+          "auth": {
+            "type": "none"
+          }
+        }
+      }
     }
   }
 }
