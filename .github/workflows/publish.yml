@@ -1,0 +1,106 @@
+# Publishes one version to npm, JSR and crates.io together, so the three never drift apart.
+#
+# Runs when a version file changes on main, or by hand from the Actions tab (Publish → Run workflow).
+# Bump the version in package.json, jsr.json and rust/Cargo.toml in the same commit; the run stops
+# if they disagree. A registry that already has the version is skipped, so re-running is safe.
+#
+# No tokens are stored here. Each registry trusts this workflow directly (trusted publishing),
+# which also gives every release a public record that it was built from this repository.
+# One-time setup, on each registry's own site:
+#   npm:       npmjs.com → magic-glyphs → Settings → Trusted Publisher → GitHub Actions,
+#              repository lewisjohnvillamor/magicglyphs, workflow publish.yml
+#   crates.io: crates.io → magic-glyphs → Settings → Trusted Publishing → add GitHub,
+#              repository lewisjohnvillamor/magicglyphs, workflow publish.yml
+#   JSR:       already linked (jsr.io → @magicglyphs/magic-glyphs → Settings → GitHub repository)
+name: Publish
+on:
+  push:
+    branches: [main]
+    paths: [package.json, jsr.json, rust/Cargo.toml]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write
+
+concurrency:
+  group: publish
+  cancel-in-progress: false
+
+jobs:
+  version:
+    runs-on: ubuntu-latest
+    outputs:
+      v: ${{ steps.v.outputs.v }}
+    steps:
+      - uses: actions/checkout@v4
+      - id: v
+        name: All three versions must match
+        run: |
+          npm_v=$(node -p "require('./package.json').version")
+          jsr_v=$(node -p "require('./jsr.json').version")
+          crate_v=$(grep -m1 '^version' rust/Cargo.toml | cut -d'"' -f2)
+          echo "npm $npm_v · jsr $jsr_v · crate $crate_v"
+          if [ "$npm_v" != "$jsr_v" ] || [ "$npm_v" != "$crate_v" ]; then
+            echo "::error::Versions differ. Set the same version in package.json, jsr.json and rust/Cargo.toml."; exit 1
+          fi
+          echo "v=$npm_v" >> "$GITHUB_OUTPUT"
+
+  npm:
+    needs: version
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          registry-url: https://registry.npmjs.org
+      - run: npm install -g npm@latest
+      - name: Publish ${{ needs.version.outputs.v }}
+        run: |
+          if npm view "magic-glyphs@${{ needs.version.outputs.v }}" version >/dev/null 2>&1; then
+            echo "npm already has ${{ needs.version.outputs.v }}, skipping"; exit 0
+          fi
+          npm publish --provenance --access public
+
+  jsr:
+    needs: version
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Publish ${{ needs.version.outputs.v }}
+        run: |
+          if curl -sf "https://jsr.io/@magicglyphs/magic-glyphs/meta.json" | node -e "process.exit(JSON.parse(require('fs').readFileSync(0)).versions['${{ needs.version.outputs.v }}']?0:1)"; then
+            echo "JSR already has ${{ needs.version.outputs.v }}, skipping"; exit 0
+          fi
+          npx jsr publish
+
+  crates:
+    needs: version
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: rust
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - id: have
+        name: Already on crates.io?
+        run: |
+          if curl -sf -A "magicglyphs-publish (github.com/lewisjohnvillamor/magicglyphs)" \
+               "https://crates.io/api/v1/crates/magic-glyphs/${{ needs.version.outputs.v }}" >/dev/null; then
+            echo "skip=1" >> "$GITHUB_OUTPUT"; echo "crates.io already has ${{ needs.version.outputs.v }}, skipping"
+          fi
+      - uses: rust-lang/crates-io-auth-action@v1
+        if: steps.have.outputs.skip != '1'
+        id: auth
+      - name: Publish ${{ needs.version.outputs.v }}
+        if: steps.have.outputs.skip != '1'
+        env:
+          CARGO_REGISTRY_TOKEN: ${{ steps.auth.outputs.token }}
+        run: |
+          cargo test --quiet
+          cargo publish
