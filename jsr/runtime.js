@@ -37,9 +37,9 @@ const MagicGlyphs = (function(){
   // svg(name, {style, size, title}) -> SVG markup string (works on a server too)
   function svg(name,opt){
     var ic=REG[name];if(!ic)return '';
-    opt=opt||{};var style=opt.style||'outline',size=opt.size||24,gid='mg'+(++uid);
+    opt=opt||{};var style=opt.style||'outline',size=/^\d*\.?\d+(px|em|rem|%)?$/.test(String(opt.size))?opt.size:24,gid='mg'+(++uid); // a size that is not a plain length falls back to 24, so it can never carry markup
     var defs=style==='glass'?'<defs><linearGradient id="'+gid+'" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="var(--mg-secondary,currentColor)" stop-opacity=".8"/><stop offset="1" stop-color="var(--mg-secondary,currentColor)" stop-opacity=".12"/></linearGradient></defs>':'';
-    var body=ic.L.map(function(l){return '<g data-l="'+l.i+'" '+paint(style,l.k,gid)+'>'+l.p.map(function(s){return '<path d="'+s.d+'"'+(s.f?' fill="'+s.f+'"':'')+(s.r?' transform="rotate('+s.r.join(' ')+')"':'')+'/>'}).join('')+'</g>'}).join('');
+    var body=ic.L.map(function(l){return '<g data-l="'+esc(l.i)+'" '+paint(style,l.k,gid)+'>'+l.p.map(function(s){return '<path d="'+esc(s.d)+'"'+(s.f?' fill="'+esc(s.f)+'"':'')+(s.r?' transform="rotate('+s.r.map(Number).join(' ')+')"':'')+'/>'}).join('')+'</g>'}).join('');
     var a11y=opt.title?'role="img" aria-label="'+esc(opt.title)+'"':'aria-hidden="true"';
     return '<svg xmlns="http://www.w3.org/2000/svg" width="'+size+'" height="'+size+'" viewBox="0 0 24 24" '+STROKE+' '+a11y+' overflow="visible">'+defs+body+'</svg>';
   }

@@ -1,6 +1,6 @@
 {
   "name": "magic-glyphs",
-  "version": "0.8.12",
+  "version": "0.8.13",
   "description": "Animated icon library with sound: spring-animated SVG icons for React, Next.js, Vue, Nuxt, Svelte, Astro, shadcn, HTML, Tailwind, Lottie (iOS, Android, Flutter, Windows) and a CLI and MCP server. 120 icons free.",
   "license": "MIT",
   "author": {

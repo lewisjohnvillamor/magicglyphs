@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.8.13
+
+- Fixed: `import 'magic-glyphs/all'` failed in Next.js and other bundlers that load it as a CommonJS module ("MagicGlyphs is not defined"). It now works in bundlers and as a script tag.
+- Security: the `size` option of `svg()`, the `<magic-glyph>` element and the React and Vue components now accepts only a plain length (a number, or px, em, rem, %), and path data is escaped, so neither can carry markup into the page. Upgrade if you pass user-supplied values to `size`.
+
 ## 0.8.12
 
 - The crates.io and NuGet pages now say how to get the full library (10,100+ icons, each in four styles) and link to the licence page, with the same steps as npm: get a licence, then `npx magic-glyphs login YOUR-KEY`. The icon count in these READMEs now updates itself with each release.
