@@ -179,6 +179,13 @@ npx -y magic-glyphs-mcp
 
 Lets Claude, Cursor and other MCP clients search the library and insert icons in your project's format. It lives in the separate [`magic-glyphs-mcp`](https://www.npmjs.com/package/magic-glyphs-mcp) package so the icon package stays small.
 
+**Claude Code plugin.** The plugin bundles the hosted MCP server (`https://magicglyphs.com/mcp`, nothing to install) with skills that pick the right icon and set up your framework. See [`plugins/magic-glyphs`](plugins/magic-glyphs/).
+
+```
+/plugin marketplace add lewisjohnvillamor/magicglyphs
+/plugin install magic-glyphs@magic-glyphs
+```
+
 ## The full library
 
 ```bash

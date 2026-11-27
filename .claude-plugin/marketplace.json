@@ -1,0 +1,18 @@
+{
+  "name": "magic-glyphs",
+  "owner": {
+    "name": "Lewis John Villamor",
+    "email": "support@magicglyphs.com"
+  },
+  "metadata": {
+    "description": "The Magic Glyphs plugin: animated icons with sound for any project."
+  },
+  "plugins": [
+    {
+      "name": "magic-glyphs",
+      "source": "./plugins/magic-glyphs",
+      "description": "Find animated icons with sound and add them to web, mobile and desktop projects with ready-to-paste code.",
+      "category": "design"
+    }
+  ]
+}

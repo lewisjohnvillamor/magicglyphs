@@ -1,0 +1,25 @@
+{
+  "name": "magic-glyphs",
+  "displayName": "Magic Glyphs",
+  "version": "1.0.0",
+  "description": "Find animated icons with sound from the Magic Glyphs library (10,100+ icons, 120 free) and add them to web, mobile and desktop projects with ready-to-paste code.",
+  "author": {
+    "name": "Lewis John Villamor",
+    "email": "support@magicglyphs.com",
+    "url": "https://magicglyphs.com"
+  },
+  "homepage": "https://magicglyphs.com/docs/ai/",
+  "repository": "https://github.com/lewisjohnvillamor/magicglyphs",
+  "license": "MIT",
+  "privacyPolicyUrl": "https://magicglyphs.com/legal/privacy/",
+  "keywords": [
+    "icons",
+    "animated icons",
+    "svg",
+    "lottie",
+    "react",
+    "vue",
+    "design",
+    "ui"
+  ]
+}

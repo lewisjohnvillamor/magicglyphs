@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "magic-glyphs": {
+      "type": "http",
+      "url": "https://magicglyphs.com/mcp"
+    }
+  }
+}
