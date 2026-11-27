@@ -65,7 +65,7 @@ Icons already on the page draw themselves as soon as their data is registered.
 
 ## WordPress
 
-1. Copy `wordpress/magic-glyphs` into `wp-content/plugins/` and activate **Magic Glyphs**.
+1. Download [magic-glyphs-wordpress.zip](https://magicglyphs.com/downloads/magic-glyphs-wordpress.zip) and upload it in **Plugins → Add New → Upload Plugin** (or copy the `wordpress/magic-glyphs` folder from the [GitHub repository](https://github.com/lewisjohnvillamor/magicglyphs) into `wp-content/plugins/`), then activate **Magic Glyphs**.
 2. Use the shortcode anywhere shortcodes work:
 
 ```

@@ -22,7 +22,7 @@ Pick the row that matches your project.
 | Angular, Svelte, Astro, Alpine, htmx | `npm install magic-glyphs` | [Web](web.md) |
 | React or Next.js | `npm install magic-glyphs` | [React and Vue](react-vue.md) |
 | Vue or Nuxt | `npm install magic-glyphs` | [React and Vue](react-vue.md) |
-| WordPress | Upload the `wordpress/magic-glyphs` folder as a plugin | [Web](web.md#wordpress) |
+| WordPress | Upload [magic-glyphs-wordpress.zip](https://magicglyphs.com/downloads/magic-glyphs-wordpress.zip) as a plugin | [Web](web.md#wordpress) |
 | Shopify | Add one asset and one snippet to the theme | [Web](web.md#shopify) |
 | iOS, macOS, Android, Windows, Flutter | `npx magic-glyphs add ... --format lottie` | [Native](native-lottie.md) |
 | You only want SVG files | `npx magic-glyphs add ... --format svg` | [CLI](cli.md) |

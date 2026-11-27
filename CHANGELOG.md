@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.8.11
+
+- The catalogue lists 10,109 icons (up from 9,339): more for accessibility, logistics, energy, business, manufacturing, agriculture, beauty, religion, emotions, time and AI. Search, `list`, the MCP server and the shadcn registry see all of them; the 120 free icons are unchanged.
+- Smaller npm package with a clean licence: the WordPress plugin is no longer inside it. Download it from [magicglyphs.com/downloads/magic-glyphs-wordpress.zip](https://magicglyphs.com/downloads/magic-glyphs-wordpress.zip) or the `wordpress` folder on GitHub. The paid-icon terms are now linked ([magicglyphs.com/docs/terms](https://magicglyphs.com/docs/terms/)) instead of shipped as a second licence file, so the package carries only the MIT licence.
+- A Claude Code plugin: the hosted MCP server plus skills that pick the right icon and set up your framework. `/plugin marketplace add lewisjohnvillamor/magicglyphs`, then `/plugin install magic-glyphs@magic-glyphs`.
+- npm, JSR and crates.io are now published together from one GitHub workflow, so the three always carry the same version.
+
 ## 0.8.10
 
 - Sound moves with the icon: sideways motion sweeps the sound across the stereo field, and rising motion brightens it. New `move` setting (0 to 1, default 1; `sound-move` on the element, `soundOptions.move` in React and Vue). Exported sound files follow the motion too.

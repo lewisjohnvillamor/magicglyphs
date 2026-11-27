@@ -179,7 +179,7 @@ npx -y magic-glyphs-mcp
 
 Lets Claude, Cursor and other MCP clients search the library and insert icons in your project's format. It lives in the separate [`magic-glyphs-mcp`](https://www.npmjs.com/package/magic-glyphs-mcp) package so the icon package stays small.
 
-**Claude Code plugin.** The plugin bundles the hosted MCP server (`https://magicglyphs.com/mcp`, nothing to install) with skills that pick the right icon and set up your framework. See [`plugins/magic-glyphs`](plugins/magic-glyphs/).
+**Claude Code plugin.** The plugin bundles the hosted MCP server (`https://magicglyphs.com/mcp`, nothing to install) with skills that pick the right icon and set up your framework. See [`plugins/magic-glyphs`](https://github.com/lewisjohnvillamor/magicglyphs/tree/main/plugins/magic-glyphs).
 
 ```
 /plugin marketplace add lewisjohnvillamor/magicglyphs
@@ -236,7 +236,7 @@ Buy a licence at **[magicscraper.gumroad.com/l/vjaxbp](https://magicscraper.gumr
 Magic Glyphs uses two licences, like most icon libraries with a free and a paid tier:
 
 - **This package is MIT licensed:** the code, the 120 free icons and the sounds. Use them in any personal or commercial project, change them and share them; keep the copyright notice with copies of the files. See [`LICENSE`](./LICENSE).
-- **The paid icons** (everything that needs a licence key) are covered by the [commercial licence](./COMMERCIAL-LICENSE.md): a one-time purchase for the people in your plan, for any number of personal, commercial and client projects. Not allowed: reselling or redistributing them as icons, publishing them where others can download them, sharing keys, or using them to train or build icon generators.
+- **The paid icons** (everything that needs a licence key) are covered by the [commercial licence](https://magicglyphs.com/docs/terms/): a one-time purchase for the people in your plan, for any number of personal, commercial and client projects. Not allowed: reselling or redistributing them as icons, publishing them where others can download them, sharing keys, or using them to train or build icon generators.
 - **The name** "Magic Glyphs" is not covered by either licence: please don't use it as the name of your own project.
 
 ## Guides
