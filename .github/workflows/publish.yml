@@ -1,7 +1,7 @@
-# Publishes one version to npm, JSR and crates.io together, so the three never drift apart.
+# Publishes one version to npm, JSR, crates.io and NuGet together, so the four never drift apart.
 #
 # Runs when a version file changes on main, or by hand from the Actions tab (Publish → Run workflow).
-# Bump the version in package.json, jsr.json and rust/Cargo.toml in the same commit; the run stops
+# Bump the version in package.json, jsr.json, rust/Cargo.toml and the NuGet .csproj in the same commit; the run stops
 # if they disagree. A registry that already has the version is skipped, so re-running is safe.
 #
 # No tokens are stored here. Each registry trusts this workflow directly (trusted publishing),
@@ -11,12 +11,14 @@
 #              repository lewisjohnvillamor/magicglyphs, workflow publish.yml
 #   crates.io: crates.io → magic-glyphs → Settings → Trusted Publishing → add GitHub,
 #              repository lewisjohnvillamor/magicglyphs, workflow publish.yml
+#   NuGet:     nuget.org → your name → Trusted Publishing → Create, repository owner lewisjohnvillamor,
+#              repository magicglyphs, workflow publish.yml (the NuGet login below uses user lewisvillamor26)
 #   JSR:       already linked (jsr.io → @magicglyphs/magic-glyphs → Settings → GitHub repository)
 name: Publish
 on:
   push:
     branches: [main]
-    paths: [package.json, jsr.json, rust/Cargo.toml]
+    paths: [package.json, jsr.json, rust/Cargo.toml, nuget/MagicGlyphs.Avalonia/src/MagicGlyphs.Avalonia.csproj]
   workflow_dispatch:
 
 permissions:
@@ -35,14 +37,15 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - id: v
-        name: All three versions must match
+        name: All four versions must match
         run: |
           npm_v=$(node -p "require('./package.json').version")
           jsr_v=$(node -p "require('./jsr.json').version")
           crate_v=$(grep -m1 '^version' rust/Cargo.toml | cut -d'"' -f2)
-          echo "npm $npm_v · jsr $jsr_v · crate $crate_v"
-          if [ "$npm_v" != "$jsr_v" ] || [ "$npm_v" != "$crate_v" ]; then
-            echo "::error::Versions differ. Set the same version in package.json, jsr.json and rust/Cargo.toml."; exit 1
+          nuget_v=$(grep -m1 -o '<Version>[^<]*' nuget/MagicGlyphs.Avalonia/src/MagicGlyphs.Avalonia.csproj | cut -d'>' -f2)
+          echo "npm $npm_v · jsr $jsr_v · crate $crate_v · nuget $nuget_v"
+          if [ "$npm_v" != "$jsr_v" ] || [ "$npm_v" != "$crate_v" ] || [ "$npm_v" != "$nuget_v" ]; then
+            echo "::error::Versions differ. Set the same version in package.json, jsr.json, rust/Cargo.toml and the NuGet .csproj."; exit 1
           fi
           echo "v=$npm_v" >> "$GITHUB_OUTPUT"
 
@@ -104,3 +107,33 @@ jobs:
         run: |
           cargo test --quiet
           cargo publish
+
+  nuget:
+    needs: version
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: nuget/MagicGlyphs.Avalonia/src
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+      - id: have
+        name: Already on NuGet?
+        run: |
+          v="${{ needs.version.outputs.v }}"
+          if curl -sf "https://api.nuget.org/v3-flatcontainer/magicglyphs.avalonia/index.json" | grep -q "\"$v\""; then
+            echo "skip=1" >> "$GITHUB_OUTPUT"; echo "NuGet already has $v, skipping"
+          fi
+      - name: Pack ${{ needs.version.outputs.v }}
+        if: steps.have.outputs.skip != '1'
+        run: dotnet pack -c Release -o ../out
+      - uses: NuGet/login@v1
+        if: steps.have.outputs.skip != '1'
+        id: login
+        with:
+          user: lewisvillamor26
+      - name: Publish ${{ needs.version.outputs.v }}
+        if: steps.have.outputs.skip != '1'
+        run: dotnet nuget push ../out/*.nupkg --api-key "${{ steps.login.outputs.NUGET_API_KEY }}" --source https://api.nuget.org/v3/index.json --skip-duplicate
