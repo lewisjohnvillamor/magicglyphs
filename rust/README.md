@@ -19,8 +19,8 @@ let length = bell.duration();                 // seconds; redraw each frame unti
 let m = bell.matrix(0, 0.12);                 // or draw it yourself: [a b c d e f] for layer 0
 ```
 
-The crate includes the 120 free icons. The full library (8,000+ icons) is generated into your project by the
-command line tool once you log in with your licence key:
+The crate includes the 120 free icons. The full library (10,100+ icons, each in four styles) is generated into your
+project by the command line tool. Get a licence at [magicglyphs.com](https://magicglyphs.com/#pricing), then log in once:
 
 ```sh
 npx magic-glyphs login YOUR-LICENCE-KEY

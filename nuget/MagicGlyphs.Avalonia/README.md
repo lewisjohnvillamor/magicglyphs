@@ -40,8 +40,15 @@ Call `Play()` to play an icon yourself. Mute every icon with `Glyphs.SoundEnable
 
 ## The full library
 
-The full Magic Glyphs library has more than 8,000 icons, an icon maker for your own artwork, and 528 sounds. Export any of them for Avalonia with the command line tool: see [magicglyphs.com/docs/avalonia](https://magicglyphs.com/docs/avalonia/).
+The full Magic Glyphs library has 10,100+ icons, each in outline, solid, duotone and glass, plus an icon maker for your own artwork and 528 sounds. Get a licence at [magicglyphs.com](https://magicglyphs.com/#pricing), then log in once and export the icons you want for Avalonia with the command line tool:
+
+```sh
+npx magic-glyphs login YOUR-LICENCE-KEY
+npx magic-glyphs add rocket heart --format avalonia
+```
+
+See [magicglyphs.com/docs/avalonia](https://magicglyphs.com/docs/avalonia/) for the details.
 
 ## Licence
 
-This package, its code, icons and sounds, is MIT licensed. The paid Magic Glyphs icons have their own licence.
+This package, its code, icons and sounds, is MIT licensed. The paid Magic Glyphs icons have their own licence: [magicglyphs.com/docs/terms](https://magicglyphs.com/docs/terms/).

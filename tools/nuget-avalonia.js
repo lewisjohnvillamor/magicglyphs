@@ -6,7 +6,7 @@
 const fs = require('fs'), path = require('path');
 const L = require('../lib.js'), B = require('./baked.js'), A = require('./audio.js'), Lic = require('../licence.js');
 const root = path.join(__dirname, '..'), out = path.join(root, 'dist', 'nuget', 'MagicGlyphs.Avalonia');
-const version = require('../package.json').version, FPS = 30, STYLES = ['outline', 'solid', 'duotone'];
+const version = require('../package.json').version, COUNT = (Math.floor(L.index.length / 100) * 100).toLocaleString('en-US') + '+', FPS = 30, STYLES = ['outline', 'solid', 'duotone'];
 const r4 = (v) => Math.round(v * 10000) / 10000;
 
 (async () => {
@@ -435,11 +435,18 @@ Call \`Play()\` to play an icon yourself. Mute every icon with \`Glyphs.SoundEna
 
 ## The full library
 
-The full Magic Glyphs library has more than 8,000 icons, an icon maker for your own artwork, and 528 sounds. Export any of them for Avalonia with the command line tool: see [magicglyphs.com/docs/avalonia](https://magicglyphs.com/docs/avalonia/).
+The full Magic Glyphs library has ${COUNT} icons, each in outline, solid, duotone and glass, plus an icon maker for your own artwork and 528 sounds. Get a licence at [magicglyphs.com](https://magicglyphs.com/#pricing), then log in once and export the icons you want for Avalonia with the command line tool:
+
+\`\`\`sh
+npx magic-glyphs login YOUR-LICENCE-KEY
+npx magic-glyphs add rocket heart --format avalonia
+\`\`\`
+
+See [magicglyphs.com/docs/avalonia](https://magicglyphs.com/docs/avalonia/) for the details.
 
 ## Licence
 
-This package, its code, icons and sounds, is MIT licensed. The paid Magic Glyphs icons have their own licence.
+This package, its code, icons and sounds, is MIT licensed. The paid Magic Glyphs icons have their own licence: [magicglyphs.com/docs/terms](https://magicglyphs.com/docs/terms/).
 `);
 
   // tests: headless Avalonia with Skia, so icons are really drawn

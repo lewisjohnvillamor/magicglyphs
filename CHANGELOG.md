@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.8.12
+
+- The crates.io and NuGet pages now say how to get the full library (10,100+ icons, each in four styles) and link to the licence page, with the same steps as npm: get a licence, then `npx magic-glyphs login YOUR-KEY`. The icon count in these READMEs now updates itself with each release.
+- NuGet (`MagicGlyphs.Avalonia`) is published together with npm, JSR and crates.io, so all four carry the same version.
+
 ## 0.8.11
 
 - The catalogue lists 10,109 icons (up from 9,339): more for accessibility, logistics, energy, business, manufacturing, agriculture, beauty, religion, emotions, time and AI. Search, `list`, the MCP server and the shadcn registry see all of them; the 120 free icons are unchanged.

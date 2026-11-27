@@ -6,7 +6,7 @@
     <RootNamespace>MagicGlyphs</RootNamespace>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <PackageId>MagicGlyphs.Avalonia</PackageId>
-    <Version>0.8.11</Version>
+    <Version>0.8.12</Version>
     <Authors>Lewis John Villamor</Authors>
     <Description>Animated icons with sound for Avalonia: 120 free Magic Glyphs icons with spring motion in outline, solid and duotone, each with its own short sound. One control, no other dependencies.</Description>
     <PackageTags>avalonia;icons;animated-icons;animation;svg;sound;ui</PackageTags>
