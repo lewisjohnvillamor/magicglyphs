@@ -1,0 +1,107 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "magic-glyphs",
+  "version": "1.0.0",
+  "description": "Find animated icons with sound from the Magic Glyphs library (10,100+ icons, 120 free) and add them to web, mobile and desktop projects with ready-to-paste code.",
+  "author": {
+    "name": "Lewis John Villamor",
+    "email": "support@magicglyphs.com",
+    "url": "https://magicglyphs.com"
+  },
+  "homepage": "https://magicglyphs.com/docs/ai/",
+  "repository": "https://github.com/lewisjohnvillamor/magicglyphs",
+  "license": "MIT",
+  "keywords": [
+    "icons",
+    "animated icons",
+    "svg",
+    "lottie",
+    "react",
+    "vue",
+    "design",
+    "ui"
+  ],
+  "extensions": {
+    "com.openai": {
+      "interface": {
+        "displayName": "Magic Glyphs",
+        "shortDescription": "Animated icons for any app",
+        "longDescription": "Magic Glyphs is a library of 10,100+ animated icons with spring motion and optional sound, in outline, solid, duotone and glass styles. This plugin finds the right icon for a button or state, says whether it is free (120 icons are MIT-licensed) or part of the paid library, and gives ready-to-paste code for plain HTML, React, Next.js, Vue, Nuxt, Svelte, Astro, shadcn, React Native, SwiftUI, Jetpack Compose, Flutter and more. It can also fetch the official setup guide for each framework.\n\nTools: search_icons, get_icon, list_categories and get_guide. All tools are read-only, use public catalogue data and need no account. The plugin never asks for a licence key; users enter it in their own terminal.",
+        "developerName": "Lewis John Villamor",
+        "category": "Developer Tools",
+        "capabilities": [
+          "Search 10,100+ animated icons by meaning",
+          "Ready-to-paste code for web, mobile and desktop frameworks",
+          "Framework setup guides"
+        ],
+        "websiteURL": "https://magicglyphs.com",
+        "supportURL": "https://github.com/lewisjohnvillamor/magicglyphs/issues",
+        "privacyPolicyURL": "https://magicglyphs.com/legal/privacy/",
+        "termsOfServiceURL": "https://magicglyphs.com/legal/terms/",
+        "defaultPrompt": [
+          "Find an animated bell icon for my notifications button",
+          "Set up Magic Glyphs in my Next.js app",
+          "Which free icons work for a checkout flow?"
+        ],
+        "brandColor": "#4A35D6",
+        "composerIcon": "./assets/icon.png",
+        "logo": "./assets/logo.png"
+      },
+      "review": {
+        "test_cases": {
+          "positive": [
+            {
+              "description": "Find an icon for a UI element",
+              "prompt": "Find an animated bell icon for my notifications button.",
+              "tools_triggered": "search_icons",
+              "expected_behavior": "Lists bell icons with whether each is free and a link to its page, and suggests the free 'bell' icon."
+            },
+            {
+              "description": "Get code for a specific framework",
+              "prompt": "Show me how to use the Magic Glyphs heart icon in React with the duotone style.",
+              "tools_triggered": "get_icon",
+              "expected_behavior": "Returns ready-to-paste React code for the heart icon with variant duotone, and the install command."
+            },
+            {
+              "description": "Set up the library in a project",
+              "prompt": "How do I set up Magic Glyphs in my Next.js app?",
+              "tools_triggered": "get_guide",
+              "expected_behavior": "Fetches the React/Next.js guide and gives the install command and a client component example."
+            },
+            {
+              "description": "Browse by category",
+              "prompt": "What categories of Magic Glyphs icons are there, and which have free icons?",
+              "tools_triggered": "list_categories",
+              "expected_behavior": "Lists the icon categories with how many icons and how many free icons each has."
+            },
+            {
+              "description": "Check whether an icon is free",
+              "prompt": "Is there a Magic Glyphs lathe icon, and can I use it for free?",
+              "tools_triggered": "search_icons, get_icon",
+              "expected_behavior": "Finds the lathe icon, says it is part of the paid library and needs a licence key, and gives its code and the licence page link without asking for a key."
+            }
+          ],
+          "negative": [
+            {
+              "description": "Unrelated request",
+              "prompt": "What's the weather in London tomorrow?"
+            },
+            {
+              "description": "Image generation",
+              "prompt": "Generate a photorealistic picture of a cat."
+            },
+            {
+              "description": "Purchase or key handling",
+              "prompt": "Buy me a Magic Glyphs licence and paste my credit card details for me."
+            }
+          ]
+        },
+        "commerce": false,
+        "commerce_description": "This plugin does not sell products or process payments. It only says whether an icon is free or part of the paid library, which is bought separately on the developer's website."
+      },
+      "publication": {
+        "release_notes": "Initial release: search the Magic Glyphs animated icon library, get framework-specific code, and fetch setup guides."
+      }
+    }
+  }
+}
